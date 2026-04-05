@@ -1,0 +1,2560 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>eNGINNo SMART Analytics Ver1.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#060b14;--bg2:#0d1525;--bg3:#111827;
+  --card:rgba(255,255,255,0.03);
+  --cyan:#00f5ff;--purple:#a855f7;--green:#10b981;
+  --yellow:#f59e0b;--red:#ef4444;--blue:#3b82f6;
+  --orange:#f97316;--pink:#ec4899;
+  --text:rgba(255,255,255,0.9);--text2:rgba(255,255,255,0.55);--text3:rgba(255,255,255,0.3);
+  --border:rgba(255,255,255,0.08);
+  --sw:260px;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Sarabun',sans-serif;overflow:hidden;}
+
+/* ══ SHELL ══ */
+.shell{display:flex;height:100vh;}
+
+/* ══ SIDEBAR ══ */
+.sidebar{
+  width:var(--sw);flex-shrink:0;
+  background:rgba(0,0,0,0.55);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+  transition:width .25s ease;
+}
+.sidebar.collapsed{width:52px;}
+.sb-brand{
+  padding:14px 12px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.sb-logo{
+  width:36px;height:36px;border-radius:10px;flex-shrink:0;
+  background:linear-gradient(135deg,#1e3a8a,#00f5ff);
+  display:flex;align-items:center;justify-content:center;font-size:1rem;
+  font-weight:900;font-family:'Orbitron',sans-serif;color:#fff;letter-spacing:-1px;
+}
+.sb-title{overflow:hidden;}
+.sb-name{font-family:'Orbitron',sans-serif;font-size:0.72rem;font-weight:700;
+  background:linear-gradient(135deg,#60a5fa,#00f5ff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;}
+.sb-ver{font-size:0.58rem;color:var(--text3);white-space:nowrap;}
+
+.sb-user{
+  padding:10px 12px;border-bottom:1px solid var(--border);flex-shrink:0;
+  background:rgba(0,245,255,0.03);
+}
+.sb-user .name{font-size:0.75rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;}
+.sb-user .role{font-size:0.62rem;color:var(--cyan);white-space:nowrap;overflow:hidden;}
+
+.sb-scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 0;}
+.sb-scroll::-webkit-scrollbar{width:3px;}
+.sb-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);}
+
+.sb-sec{font-size:0.58rem;text-transform:uppercase;letter-spacing:2px;
+  color:var(--text3);padding:10px 14px 4px;white-space:nowrap;overflow:hidden;}
+.sb-item{
+  display:flex;align-items:center;gap:9px;padding:8px 12px;
+  cursor:pointer;border-radius:8px;margin:1px 6px;transition:.15s;
+  border-left:2px solid transparent;
+}
+.sb-item:hover{background:rgba(255,255,255,0.04);}
+.sb-item.active{background:rgba(0,245,255,0.08);border-left-color:var(--cyan);color:var(--cyan);}
+.sb-item .si{font-size:0.88rem;flex-shrink:0;width:18px;text-align:center;}
+.sb-item .sl{font-size:0.76rem;white-space:nowrap;overflow:hidden;font-weight:500;}
+.sb-item .sb{
+  margin-left:auto;font-size:0.6rem;padding:2px 6px;border-radius:8px;
+  background:rgba(239,68,68,0.2);color:var(--red);font-weight:700;flex-shrink:0;
+}
+
+/* ══ MAIN ══ */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+
+.topbar{
+  padding:10px 18px;border-bottom:1px solid var(--border);
+  background:rgba(0,0,0,0.45);display:flex;align-items:center;
+  justify-content:space-between;flex-shrink:0;gap:10px;
+}
+.tb-left{display:flex;align-items:center;gap:10px;}
+.tb-toggle{
+  width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,0.04);
+  border:1px solid var(--border);color:var(--text2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:0.85rem;
+}
+.tb-title{font-family:'Orbitron',sans-serif;font-size:0.85rem;font-weight:700;color:var(--cyan);}
+.tb-sub{font-size:0.65rem;color:var(--text3);}
+.tb-right{display:flex;align-items:center;gap:8px;}
+.clk{font-family:'Orbitron',sans-serif;font-size:0.78rem;color:var(--cyan);text-align:right;}
+.clk-d{font-size:0.6rem;color:var(--text3);}
+.tb-btn{
+  padding:5px 12px;border-radius:7px;border:1px solid var(--border);
+  background:rgba(255,255,255,0.04);color:var(--text2);
+  font-size:0.7rem;cursor:pointer;transition:.15s;font-family:'Sarabun',sans-serif;
+}
+.tb-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+.tb-btn.primary{background:rgba(0,245,255,0.1);border-color:rgba(0,245,255,0.3);color:var(--cyan);}
+
+.content{flex:1;overflow:auto;padding:16px 18px;}
+.content::-webkit-scrollbar{width:4px;}
+.content::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px;}
+
+/* ══ PAGES ══ */
+.page{display:none;}
+.page.active{display:block;}
+
+/* ══ COMPONENTS ══ */
+.sec-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
+.sec-hdr h2{font-family:'Orbitron',sans-serif;font-size:0.9rem;font-weight:700;}
+.sec-hdr p{font-size:0.72rem;color:var(--text2);margin-top:2px;}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px;}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.card-hdr h3{font-family:'Orbitron',sans-serif;font-size:0.75rem;font-weight:700;}
+
+.btn{padding:6px 14px;border-radius:8px;border:1px solid;font-size:0.73rem;
+  font-weight:600;cursor:pointer;font-family:'Sarabun',sans-serif;transition:.15s;}
+.btn-c{background:rgba(0,245,255,0.1);border-color:rgba(0,245,255,0.3);color:var(--cyan);}
+.btn-c:hover{background:rgba(0,245,255,0.2);}
+.btn-g{background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);color:var(--green);}
+.btn-r{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:var(--red);}
+.btn-y{background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.3);color:var(--yellow);}
+.btn-p{background:rgba(168,85,247,0.1);border-color:rgba(168,85,247,0.3);color:var(--purple);}
+
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:0.65rem;font-weight:600;}
+.b-g{background:rgba(16,185,129,0.15);color:var(--green);}
+.b-y{background:rgba(245,158,11,0.15);color:var(--yellow);}
+.b-r{background:rgba(239,68,68,0.15);color:var(--red);}
+.b-b{background:rgba(59,130,246,0.15);color:var(--blue);}
+.b-p{background:rgba(168,85,247,0.15);color:var(--purple);}
+.b-c{background:rgba(0,245,255,0.1);color:var(--cyan);}
+.b-o{background:rgba(249,115,22,0.15);color:var(--orange);}
+
+/* ══ EISENHOWER MATRIX ══ */
+.matrix{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.quadrant{
+  border-radius:12px;padding:12px;min-height:200px;
+  display:flex;flex-direction:column;
+}
+.q1{background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);}
+.q2{background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);}
+.q3{background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);}
+.q4{background:rgba(148,163,184,0.06);border:1px solid rgba(148,163,184,0.15);}
+
+.q-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.q-title{font-size:0.72rem;font-weight:700;}
+.q1 .q-title{color:var(--red);}
+.q2 .q-title{color:var(--green);}
+.q3 .q-title{color:var(--yellow);}
+.q4 .q-title{color:var(--text3);}
+.q-label{font-size:0.6rem;color:var(--text3);}
+.q-count{font-family:'Orbitron',sans-serif;font-size:0.7rem;font-weight:700;}
+
+.task-item{
+  padding:8px 10px;border-radius:8px;margin-bottom:6px;
+  background:rgba(0,0,0,0.25);cursor:pointer;transition:.15s;
+  border-left:3px solid transparent;
+}
+.task-item:hover{background:rgba(0,0,0,0.4);}
+.q1 .task-item{border-left-color:var(--red);}
+.q2 .task-item{border-left-color:var(--green);}
+.q3 .task-item{border-left-color:var(--yellow);}
+.q4 .task-item{border-left-color:var(--text3);}
+.task-title{font-size:0.76rem;font-weight:600;margin-bottom:3px;color:var(--text);}
+.task-meta{font-size:0.62rem;color:var(--text3);display:flex;gap:8px;flex-wrap:wrap;}
+.task-prog{height:4px;background:rgba(255,255,255,0.08);border-radius:2px;margin-top:5px;overflow:hidden;}
+.task-prog-fill{height:100%;border-radius:2px;transition:width .5s;}
+.task-done{opacity:0.5;text-decoration:line-through;}
+
+/* ══ PROGRESS REPORT TABLE ══ */
+.rpt-table{width:100%;border-collapse:collapse;font-size:0.75rem;}
+.rpt-table th{
+  padding:8px 10px;background:rgba(0,0,0,0.4);
+  border-bottom:1px solid var(--border);text-align:left;
+  color:var(--text3);font-size:0.63rem;text-transform:uppercase;letter-spacing:.8px;
+  white-space:nowrap;position:sticky;top:0;
+}
+.rpt-table td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle;}
+.rpt-table tr:hover td{background:rgba(255,255,255,0.02);}
+
+.prog-bar{height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;width:80px;}
+.prog-fill{height:100%;border-radius:3px;transition:width .5s;}
+
+/* ══ STAKEHOLDER GRID ══ */
+.sh-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
+.sh-card{
+  padding:14px;border-radius:12px;background:var(--card);
+  border:1px solid var(--border);cursor:pointer;transition:.2s;
+}
+.sh-card:hover{transform:translateY(-2px);border-color:rgba(0,245,255,0.2);}
+.sh-icon{font-size:1.5rem;margin-bottom:8px;}
+.sh-name{font-size:0.78rem;font-weight:700;color:var(--text);margin-bottom:3px;}
+.sh-code{font-size:0.62rem;color:var(--text3);}
+.sh-stat{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+
+/* ══ MODAL ══ */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);
+  z-index:200;align-items:center;justify-content:center;padding:16px;overflow-y:auto;}
+.modal.open{display:flex;}
+.modal-box{background:#0d1525;border:1px solid var(--border);border-radius:16px;
+  padding:22px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;}
+.modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.modal-hdr h3{font-family:'Orbitron',sans-serif;font-size:0.9rem;color:var(--cyan);}
+.modal-close{background:none;border:none;color:var(--text2);font-size:1.5rem;cursor:pointer;}
+
+.fg{margin-bottom:10px;}
+.fl{display:block;font-size:0.7rem;color:var(--text3);margin-bottom:4px;}
+.fi{width:100%;padding:7px 10px;background:rgba(255,255,255,0.05);
+  border:1px solid var(--border);border-radius:8px;color:var(--text);
+  font-size:0.78rem;outline:none;font-family:'Sarabun',sans-serif;}
+.fi:focus{border-color:rgba(0,245,255,0.4);}
+textarea.fi{resize:vertical;min-height:65px;}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;}
+
+/* ══ TOAST ══ */
+.toast{position:fixed;bottom:20px;right:20px;z-index:999;padding:10px 18px;
+  border-radius:10px;font-size:0.8rem;font-weight:600;color:#fff;display:none;
+  animation:fadeUp .3s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+/* AI message styles */
+.ai-msg-user{align-self:flex-end;max-width:75%;padding:10px 14px;border-radius:12px 12px 2px 12px;background:rgba(0,245,255,0.08);border:1px solid rgba(0,245,255,0.15);font-size:0.8rem;color:var(--text);}
+.ai-msg-bot{align-self:flex-start;max-width:85%;padding:12px 14px;border-radius:2px 12px 12px 12px;background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.15);font-size:0.8rem;color:var(--text);line-height:1.7;}
+.ai-msg-bot h4{color:var(--purple);font-size:0.78rem;margin-bottom:6px;font-family:Orbitron,sans-serif;}
+.ai-msg-bot ul{margin-left:14px;margin-top:4px;}
+.ai-msg-bot li{margin-bottom:3px;}
+.ai-alert-card{padding:12px 14px;border-radius:10px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);}
+
+/* ══ WEEKLY/MONTHLY ══ */
+.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:14px;}
+.day-col{border-radius:10px;background:var(--card);border:1px solid var(--border);padding:8px;min-height:120px;}
+.day-col.today{border-color:rgba(0,245,255,0.3);background:rgba(0,245,255,0.03);}
+.day-name{font-size:0.62rem;font-weight:700;text-align:center;margin-bottom:6px;color:var(--text3);}
+.day-col.today .day-name{color:var(--cyan);}
+.day-num{font-family:'Orbitron',sans-serif;font-size:0.85rem;text-align:center;margin-bottom:6px;}
+.day-task{font-size:0.6rem;padding:3px 6px;border-radius:4px;margin-bottom:3px;
+  background:rgba(0,245,255,0.08);color:var(--cyan);cursor:pointer;}
+
+/* ══ COMMENT BOX ══ */
+.comment-box{padding:12px;border-radius:10px;background:rgba(168,85,247,0.06);
+  border:1px solid rgba(168,85,247,0.15);margin-top:10px;}
+.comment-box .cb-hdr{font-size:0.68rem;color:var(--purple);font-weight:700;margin-bottom:8px;}
+.comment-item{font-size:0.75rem;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.comment-item .ca{font-size:0.62rem;color:var(--text3);}
+
+/* STATS ROW */
+.stats-row{display:grid;gap:10px;margin-bottom:14px;}
+.g4{grid-template-columns:repeat(4,1fr);}
+.g3{grid-template-columns:repeat(3,1fr);}
+.stat{padding:12px 14px;border-radius:11px;background:var(--card);border:1px solid var(--border);}
+.stat .sv{font-family:'Orbitron',sans-serif;font-size:1.5rem;font-weight:700;line-height:1;}
+.stat .sl{font-size:0.63rem;color:var(--text3);margin-top:4px;}
+
+@media(max-width:768px){
+  .matrix{grid-template-columns:1fr;}
+  .fg2,.fg3{grid-template-columns:1fr;}
+  .sidebar{width:52px;}
+  .week-grid{grid-template-columns:repeat(3,1fr);}
+  .sh-grid{grid-template-columns:1fr 1fr;}
+  .g4{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     LOGIN / REGISTER PAGE
+══════════════════════════════════════ -->
+<div id="login-page" style="position:fixed;inset:0;z-index:9999;background:#060b14;display:flex;align-items:center;justify-content:center;padding:16px;">
+  <!-- Background grid -->
+  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(0,245,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,245,255,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;"></div>
+
+  <div style="width:100%;max-width:440px;position:relative;z-index:1;">
+    <!-- Brand -->
+    <div style="text-align:center;margin-bottom:28px;">
+      <div style="width:60px;height:60px;border-radius:16px;background:linear-gradient(135deg,#1e3a8a,#00f5ff);display:flex;align-items:center;justify-content:center;font-family:Orbitron,sans-serif;font-size:1.4rem;font-weight:900;color:#fff;margin:0 auto 14px;box-shadow:0 0 30px rgba(0,245,255,0.2);">eN</div>
+      <div style="font-family:Orbitron,sans-serif;font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,#60a5fa,#00f5ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">eNGINNo</div>
+      <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-top:2px;">SMART Analytics Ver1.0</div>
+      <div style="font-size:0.65rem;color:rgba(255,255,255,0.25);margin-top:2px;">Engineering Innovation · PSD</div>
+    </div>
+
+    <!-- Tabs -->
+    <div style="display:flex;gap:0;margin-bottom:20px;background:rgba(255,255,255,0.04);border-radius:10px;padding:4px;border:1px solid rgba(255,255,255,0.08);">
+      <button id="tab-login-btn" onclick="switchAuthTab('login')"
+        style="flex:1;padding:8px;border:none;border-radius:7px;font-size:0.78rem;font-weight:700;cursor:pointer;background:rgba(0,245,255,0.12);color:#00f5ff;font-family:Sarabun,sans-serif;">
+        🔑 Login
+      </button>
+      <button id="tab-reg-btn" onclick="switchAuthTab('register')"
+        style="flex:1;padding:8px;border:none;border-radius:7px;font-size:0.78rem;font-weight:700;cursor:pointer;background:transparent;color:rgba(255,255,255,0.4);font-family:Sarabun,sans-serif;">
+        📝 Register
+      </button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="auth-login" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:22px;">
+      <div id="login-error" style="display:none;padding:8px 12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:8px;font-size:0.75rem;color:#ef4444;margin-bottom:12px;"></div>
+      <div style="margin-bottom:10px;">
+        <label style="display:block;font-size:0.7rem;color:rgba(255,255,255,0.4);margin-bottom:4px;">Username *</label>
+        <input type="text" id="login-user" class="fi" placeholder="Username" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-size:0.7rem;color:rgba(255,255,255,0.4);margin-bottom:4px;">Password *</label>
+        <input type="password" id="login-pass" class="fi" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button onclick="doLogin()" style="width:100%;padding:11px;background:linear-gradient(135deg,rgba(0,100,200,0.4),rgba(0,245,255,0.2));border:1px solid rgba(0,245,255,0.3);border-radius:9px;color:#00f5ff;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:Sarabun,sans-serif;">
+        🔑 เข้าสู่ระบบ
+      </button>
+      <div style="text-align:center;margin-top:12px;font-size:0.68rem;color:rgba(255,255,255,0.3);">
+        ยังไม่มีบัญชี? <span onclick="switchAuthTab('register')" style="color:#00f5ff;cursor:pointer;">สมัครสมาชิก</span>
+      </div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="auth-register" style="display:none;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:22px;">
+      <div id="reg-error" style="display:none;padding:8px 12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:8px;font-size:0.75rem;color:#ef4444;margin-bottom:12px;"></div>
+      <div id="reg-success" style="display:none;padding:8px 12px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:8px;font-size:0.75rem;color:#10b981;margin-bottom:12px;"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+        <div>
+          <label style="display:block;font-size:0.7rem;color:rgba(255,255,255,0.4);margin-bottom:4px;">ชื่อ-นามสกุล *</label>
+          <input type="text" id="reg-name" class="fi" placeholder="Full Name">
+        </div>
+        <div>
+          <label style="display:block;font-size:0.7rem;color:rgba(255,255,255,0.4);margin-bottom:4px;">Username *</label>
+          <input type="text" id="reg-uname" class="fi" placeholder="username">
+        </div>
+      </div>
+      <div style="margin-bottom:10px;">
+        <label style="display:block;font-size:0.7rem;color:rgba(255,255,255,0.4);margin-bottom:4px;">Password *</label>
+        <input type="password" id="reg-pass" class="fi" placeholder="Password">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+        <div>
+          <label style="display:block;font-size:0.7rem;color:rgba(255,255,255,0.4);margin-bottom:4px;">หน่วยงาน (ENGINNO Function) *</label>
+          <select id="reg-dept" class="fi">
+            <option value="">— เลือกหน่วยงาน —</option>
+            <option value="B1">B1 · ENGINNO Management</option>
+            <option value="B2">B2 · ESG Management</option>
+            <option value="B3">B3 · Internal Control & Process</option>
+            <option value="B4">B4 · QSHE Management</option>
+            <option value="B5">B5 · Standard & Operation Excellence</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:0.7rem;color:rgba(255,255,255,0.4);margin-bottom:4px;">ตำแหน่ง *</label>
+          <select id="reg-role" class="fi">
+            <option value="">— เลือกตำแหน่ง —</option>
+            <option value="Engineer">Engineer</option>
+            <option value="Senior Engineer">Senior Engineer</option>
+            <option value="Supervisor">Supervisor</option>
+            <option value="Manager">Manager</option>
+            <option value="Specialist">Specialist</option>
+            <option value="Coordinator">Coordinator</option>
+            <option value="Technician">Technician</option>
+            <option value="Assistant Director">Assistant Director</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-size:0.7rem;color:rgba(255,255,255,0.4);margin-bottom:4px;">อีเมล</label>
+        <input type="email" id="reg-email" class="fi" placeholder="email@company.com">
+      </div>
+      <button onclick="doRegister()" style="width:100%;padding:11px;background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(0,245,255,0.1));border:1px solid rgba(16,185,129,0.3);border-radius:9px;color:#10b981;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:Sarabun,sans-serif;">
+        📝 สมัครสมาชิก
+      </button>
+      <div style="text-align:center;margin-top:10px;font-size:0.67rem;color:rgba(255,255,255,0.3);">
+        หลังสมัครต้องรอ Admin อนุมัติก่อนเข้าใช้งานได้
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="shell" style="display:none;">
+
+<!-- ══ SIDEBAR ══ -->
+<div class="sidebar" id="sidebar">
+  <div class="sb-brand">
+    <div class="sb-logo">eN</div>
+    <div class="sb-title">
+      <div class="sb-name">eNGINNo</div>
+      <div class="sb-ver">SMART Analytics Ver1.0</div>
+    </div>
+  </div>
+  <div class="sb-user" style="cursor:default;">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div class="name" id="sb-username">—</div>
+        <div class="role" id="sb-role">—</div>
+        <div style="font-size:0.58rem;color:var(--text3);margin-top:1px;" id="sb-dept">—</div>
+      </div>
+      <button onclick="doLogout()" title="Logout" style="width:28px;height:28px;border-radius:7px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:var(--red);cursor:pointer;font-size:0.7rem;flex-shrink:0;">⏏</button>
+    </div>
+  </div>
+  <div class="sb-scroll">
+
+    <div class="sb-sec">🖥️ DASHBOARD</div>
+    <div class="sb-item active" onclick="nav('monitor')" id="nav-monitor">
+      <span class="si">📊</span><span class="sl">Dashboard Monitor</span>
+    </div>
+
+    <div class="sb-item" onclick="nav('ai')" id="nav-ai">
+      <span class="si">🤖</span><span class="sl">AI Analytics</span>
+      <span class="sb" id="nb-ai-alert" style="display:none;background:rgba(168,85,247,0.25);color:#a855f7;">!</span>
+    </div>
+
+    <div class="sb-sec">📅 DAILY WORK</div>
+    <div class="sb-item" onclick="nav('daily')" id="nav-daily">
+      <span class="si">📋</span><span class="sl">Daily Plan (4Q)</span>
+      <span class="sb" id="nb-urgent" style="display:none">0</span>
+    </div>
+    <div class="sb-item" onclick="nav('progress')" id="nav-progress">
+      <span class="si">📊</span><span class="sl">Daily Progress</span>
+    </div>
+    <div class="sb-item" onclick="nav('weekly')" id="nav-weekly">
+      <span class="si">📆</span><span class="sl">Weekly Report</span>
+    </div>
+    <div class="sb-item" onclick="nav('monthly')" id="nav-monthly">
+      <span class="si">📈</span><span class="sl">Monthly Executive</span>
+    </div>
+
+    <div class="sb-sec">🏢 STAKEHOLDERS</div>
+    <div class="sb-item" onclick="nav('stakeholder')" id="nav-stakeholder">
+      <span class="si">🌐</span><span class="sl">All Stakeholders</span>
+    </div>
+    <div class="sb-item" onclick="nav('enginno')" id="nav-enginno">
+      <span class="si">⚙️</span><span class="sl">ENGINNO Functions</span>
+    </div>
+
+    <div class="sb-sec">🧠 FRAMEWORK</div>
+    <div class="sb-item" onclick="nav('toilet')" id="nav-toilet">
+      <span class="si">🚽</span><span class="sl">TOILET Assessment</span>
+    </div>
+    <div class="sb-item" onclick="nav('dmaic')" id="nav-dmaic">
+      <span class="si">📐</span><span class="sl">DMAIC Projects</span>
+    </div>
+
+    <div class="sb-sec">🔗 CONNECT</div>
+    <div class="sb-item" onclick="nav('connect')" id="nav-connect">
+      <span class="si">🔗</span><span class="sl">AppSheet / Looker</span>
+    </div>
+    <div class="sb-item" onclick="nav('admin')" id="nav-admin" style="display:none;">
+      <span class="si">🔐</span><span class="sl">Admin Panel</span>
+      <span class="sb" id="nb-pending" style="display:none;">0</span>
+    </div>
+
+  </div>
+</div><!-- end sidebar -->
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+  <div class="topbar">
+    <div class="tb-left">
+      <button class="tb-toggle" onclick="toggleSB()"><i class="fa-solid fa-bars"></i></button>
+      <div>
+        <div class="tb-title" id="tb-title">Daily Plan</div>
+        <div class="tb-sub" id="tb-sub">Eisenhower Matrix · Task Management</div>
+      </div>
+    </div>
+    <div class="tb-right">
+      <div>
+        <div class="clk" id="clk-time">—</div>
+        <div class="clk-d" id="clk-date"></div>
+      </div>
+      <button class="tb-btn primary" id="tb-add-btn" onclick="openAddTask()">＋ Add Task</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══════════════════════════════════
+         PAGE: DAILY PLAN
+    ══════════════════════════════════ -->
+    <div class="page active" id="page-daily">
+      <div class="sec-hdr">
+        <div>
+          <h2>📋 Daily eNGINNo Plan</h2>
+          <p id="daily-date-label">วันนี้ · Eisenhower Priority Matrix</p>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <input type="date" id="daily-date-filter" class="fi" style="width:150px;padding:5px 8px;" onchange="renderDaily()">
+          <button class="btn btn-c" onclick="openAddTask()">＋ Add Task</button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row g4" style="margin-bottom:14px;">
+        <div class="stat" style="border-color:rgba(239,68,68,0.2);">
+          <div class="sl">🔴 สำคัญ/เร่งด่วน</div>
+          <div class="sv" id="cnt-q1" style="color:var(--red);">0</div>
+        </div>
+        <div class="stat" style="border-color:rgba(16,185,129,0.2);">
+          <div class="sl">🟢 สำคัญ/ไม่เร่งด่วน</div>
+          <div class="sv" id="cnt-q2" style="color:var(--green);">0</div>
+        </div>
+        <div class="stat" style="border-color:rgba(245,158,11,0.2);">
+          <div class="sl">🟡 ไม่สำคัญ/เร่งด่วน</div>
+          <div class="sv" id="cnt-q3" style="color:var(--yellow);">0</div>
+        </div>
+        <div class="stat" style="border-color:rgba(148,163,184,0.15);">
+          <div class="sl">⚪ ไม่สำคัญ/ไม่เร่งด่วน</div>
+          <div class="sv" id="cnt-q4" style="color:var(--text2);">0</div>
+        </div>
+      </div>
+
+      <!-- Eisenhower Matrix -->
+      <div class="matrix">
+        <!-- Q1 -->
+        <div class="quadrant q1">
+          <div class="q-hdr">
+            <div>
+              <div class="q-title">🔴 DO FIRST</div>
+              <div class="q-label">สำคัญ & เร่งด่วน</div>
+            </div>
+            <button class="btn btn-r" style="padding:3px 8px;font-size:0.62rem;" onclick="openAddTask('q1')">＋</button>
+          </div>
+          <div id="q1-tasks"></div>
+        </div>
+        <!-- Q2 -->
+        <div class="quadrant q2">
+          <div class="q-hdr">
+            <div>
+              <div class="q-title">🟢 SCHEDULE</div>
+              <div class="q-label">สำคัญ & ไม่เร่งด่วน</div>
+            </div>
+            <button class="btn btn-g" style="padding:3px 8px;font-size:0.62rem;" onclick="openAddTask('q2')">＋</button>
+          </div>
+          <div id="q2-tasks"></div>
+        </div>
+        <!-- Q3 -->
+        <div class="quadrant q3">
+          <div class="q-hdr">
+            <div>
+              <div class="q-title">🟡 DELEGATE</div>
+              <div class="q-label">ไม่สำคัญ & เร่งด่วน</div>
+            </div>
+            <button class="btn btn-y" style="padding:3px 8px;font-size:0.62rem;" onclick="openAddTask('q3')">＋</button>
+          </div>
+          <div id="q3-tasks"></div>
+        </div>
+        <!-- Q4 -->
+        <div class="quadrant q4">
+          <div class="q-hdr">
+            <div>
+              <div class="q-title">⚪ ELIMINATE</div>
+              <div class="q-label">ไม่สำคัญ & ไม่เร่งด่วน</div>
+            </div>
+            <button class="btn" style="padding:3px 8px;font-size:0.62rem;border-color:var(--border);color:var(--text3);" onclick="openAddTask('q4')">＋</button>
+          </div>
+          <div id="q4-tasks"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         PAGE: DAILY PROGRESS
+    ══════════════════════════════════ -->
+    <div class="page" id="page-progress">
+      <div class="sec-hdr">
+        <div>
+          <h2>📊 Daily Progress Report</h2>
+          <p>บันทึกความคืบหน้า · ส่งผู้บริหาร/ทีม</p>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-c" onclick="openAddProgress()">＋ Add Progress</button>
+          <button class="btn btn-p" onclick="exportReport('daily')">📧 Export</button>
+        </div>
+      </div>
+
+      <div class="card" style="overflow-x:auto;">
+        <table class="rpt-table">
+          <thead><tr>
+            <th>วันที่/เวลา</th>
+            <th>งานที่ดำเนินการ</th>
+            <th>รายละเอียด</th>
+            <th>Stakeholder</th>
+            <th>ลำดับ</th>
+            <th>%คืบหน้า</th>
+            <th>ผลลัพธ์</th>
+            <th>ผู้ดำเนิน</th>
+            <th>ผู้ติดตาม</th>
+            <th>Executive Comment</th>
+            <th>Actions</th>
+          </tr></thead>
+          <tbody id="progress-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         PAGE: WEEKLY
+    ══════════════════════════════════ -->
+    <div class="page" id="page-weekly">
+      <div class="sec-hdr">
+        <div>
+          <h2>📆 Weekly Progress Report</h2>
+          <p>ภาพรวมรายสัปดาห์ · Engineering Innovation</p>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <button class="btn" style="border-color:var(--border);color:var(--text2);" onclick="weekNav(-1)">‹ Prev</button>
+          <span id="week-label" style="font-size:0.78rem;color:var(--cyan);min-width:160px;text-align:center;">—</span>
+          <button class="btn" style="border-color:var(--border);color:var(--text2);" onclick="weekNav(1)">Next ›</button>
+          <button class="btn btn-p" onclick="exportReport('weekly')">📧 Export</button>
+        </div>
+      </div>
+
+      <!-- Weekly calendar -->
+      <div class="week-grid" id="week-grid"></div>
+
+      <!-- Weekly summary table -->
+      <div class="card">
+        <div class="card-hdr"><h3>📋 งานสัปดาห์นี้</h3></div>
+        <table class="rpt-table">
+          <thead><tr>
+            <th>วัน</th><th>งาน</th><th>Stakeholder</th><th>สถานะ</th><th>%</th><th>หมายเหตุ</th>
+          </tr></thead>
+          <tbody id="weekly-tbody"></tbody>
+        </table>
+      </div>
+
+      <!-- Weekly KPI -->
+      <div class="stats-row g3">
+        <div class="stat"><div class="sl">งานทั้งหมด</div><div class="sv" id="wk-total" style="color:var(--cyan);">0</div></div>
+        <div class="stat" style="border-color:rgba(16,185,129,0.2);"><div class="sl">เสร็จแล้ว</div><div class="sv" id="wk-done" style="color:var(--green);">0</div></div>
+        <div class="stat" style="border-color:rgba(245,158,11,0.2);"><div class="sl">กำลังดำเนินการ</div><div class="sv" id="wk-prog" style="color:var(--yellow);">0</div></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         PAGE: MONTHLY EXECUTIVE
+    ══════════════════════════════════ -->
+    <div class="page" id="page-monthly">
+      <div class="sec-hdr">
+        <div>
+          <h2>📈 Monthly Executive Summary</h2>
+          <p>รายงานสรุปผู้บริหาร · eNGINNo Strategy Plan 2026</p>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <select id="month-select" class="fi" style="width:160px;padding:5px 8px;" onchange="renderMonthly()">
+          </select>
+          <button class="btn btn-p" onclick="exportReport('monthly')">📧 Export Executive</button>
+        </div>
+      </div>
+
+      <!-- Executive KPI -->
+      <div class="stats-row g4" style="margin-bottom:14px;">
+        <div class="stat"><div class="sl">งานทั้งหมด</div><div class="sv" id="mo-total" style="color:var(--cyan);">0</div></div>
+        <div class="stat" style="border-color:rgba(16,185,129,0.2);"><div class="sl">เสร็จสมบูรณ์</div><div class="sv" id="mo-done" style="color:var(--green);">0</div></div>
+        <div class="stat" style="border-color:rgba(168,85,247,0.2);"><div class="sl">Stakeholders</div><div class="sv" id="mo-sh" style="color:var(--purple);">0</div></div>
+        <div class="stat" style="border-color:rgba(245,158,11,0.2);"><div class="sl">Avg Progress</div><div class="sv" id="mo-avg" style="color:var(--yellow);">0%</div></div>
+      </div>
+
+      <!-- Monthly summary -->
+      <div class="card">
+        <div class="card-hdr">
+          <h3>📊 Executive Summary Report</h3>
+        </div>
+        <div id="monthly-summary" style="font-size:0.8rem;line-height:1.8;color:var(--text2);">
+          <div style="text-align:center;padding:30px;color:var(--text3);">
+            <div style="font-size:2rem;margin-bottom:8px;">📈</div>
+            <p>เพิ่มข้อมูล Progress เพื่อสร้าง Monthly Report</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comment from executive -->
+      <div class="comment-box">
+        <div class="cb-hdr">💬 Executive Comments & Feedback</div>
+        <div id="monthly-comments">
+          <div style="font-size:0.75rem;color:var(--text3);">ยังไม่มี comment</div>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:10px;">
+          <input type="text" id="new-comment" class="fi" placeholder="เพิ่ม comment จากผู้บริหาร..." style="flex:1;">
+          <input type="text" id="comment-by" class="fi" placeholder="โดย..." style="width:120px;">
+          <button class="btn btn-p" onclick="addComment()">＋</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         PAGE: STAKEHOLDER
+    ══════════════════════════════════ -->
+    <div class="page" id="page-stakeholder">
+      <div class="sec-hdr">
+        <div><h2>🌐 Stakeholder Management</h2><p>13 Organizations · Engineering Innovation Support</p></div>
+      </div>
+      <div class="sh-grid" id="stakeholder-grid"></div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         PAGE: ENGINNO FUNCTIONS
+    ══════════════════════════════════ -->
+    <div class="page" id="page-enginno">
+      <div class="sec-hdr">
+        <div><h2>⚙️ eNGINNo Functions</h2><p>B1–B5 Engineering Innovation · PSD Central</p></div>
+      </div>
+      <div class="sh-grid" id="enginno-grid"></div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         PAGE: TOILET ASSESSMENT
+    ══════════════════════════════════ -->
+    <div class="page" id="page-toilet">
+      <div class="sec-hdr">
+        <div><h2>🚽 TOILET Culture Assessment</h2><p>T·O·I·L·E·T Framework — TKO_Kittanan ONSEE</p></div>
+        <button class="btn btn-c" onclick="openToiletModal()">＋ Assess</button>
+      </div>
+      <div class="stats-row" style="grid-template-columns:repeat(6,1fr);margin-bottom:14px;">
+        <div class="stat" style="border-color:rgba(0,245,255,0.2);text-align:center;">
+          <div style="font-size:1.4rem;">🔍</div>
+          <div class="sl">Transparency</div>
+          <div class="sv" id="tl-T" style="color:var(--cyan);font-size:1.2rem;">—</div>
+        </div>
+        <div class="stat" style="border-color:rgba(245,158,11,0.2);text-align:center;">
+          <div style="font-size:1.4rem;">🏆</div>
+          <div class="sl">Ownership</div>
+          <div class="sv" id="tl-O" style="color:var(--yellow);font-size:1.2rem;">—</div>
+        </div>
+        <div class="stat" style="border-color:rgba(16,185,129,0.2);text-align:center;">
+          <div style="font-size:1.4rem;">🎯</div>
+          <div class="sl">Incentive</div>
+          <div class="sv" id="tl-I" style="color:var(--green);font-size:1.2rem;">—</div>
+        </div>
+        <div class="stat" style="border-color:rgba(59,130,246,0.2);text-align:center;">
+          <div style="font-size:1.4rem;">👂</div>
+          <div class="sl">Listening</div>
+          <div class="sv" id="tl-L" style="color:var(--blue);font-size:1.2rem;">—</div>
+        </div>
+        <div class="stat" style="border-color:rgba(236,72,153,0.2);text-align:center;">
+          <div style="font-size:1.4rem;">💝</div>
+          <div class="sl">Empathy</div>
+          <div class="sv" id="tl-E" style="color:var(--pink);font-size:1.2rem;">—</div>
+        </div>
+        <div class="stat" style="border-color:rgba(168,85,247,0.2);text-align:center;">
+          <div style="font-size:1.4rem;">💎</div>
+          <div class="sl">Trusted</div>
+          <div class="sv" id="tl-T2" style="color:var(--purple);font-size:1.2rem;">—</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><h3>📋 Assessment Log</h3></div>
+        <div id="toilet-log"><div style="text-align:center;padding:20px;color:var(--text3);">ยังไม่มีการประเมิน</div></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         PAGE: DMAIC
+    ══════════════════════════════════ -->
+    <div class="page" id="page-dmaic">
+      <div class="sec-hdr">
+        <div><h2>📐 DMAIC Process Improvement</h2><p>Six Sigma · Define·Measure·Analyze·Improve·Control</p></div>
+        <button class="btn btn-c" onclick="openDMAICModal()">＋ Add Project</button>
+      </div>
+      <div id="dmaic-list"><div style="text-align:center;padding:30px;color:var(--text3);">ยังไม่มีโครงการ</div></div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         PAGE: CONNECT
+    ══════════════════════════════════ -->
+    <div class="page" id="page-connect">
+      <div class="sec-hdr">
+        <div><h2>🔗 Data Connection</h2><p>Google Sheets · AppSheet · Looker Studio</p></div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr"><h3>📊 Google Sheets (Apps Script)</h3></div>
+        <div class="fg">
+          <label class="fl">Apps Script URL</label>
+          <input type="url" id="gs-url" class="fi" placeholder="https://script.google.com/macros/s/...">
+        </div>
+        <button class="btn btn-c" onclick="gsConnect()" style="margin-top:6px;">🔗 Connect</button>
+        <div id="gs-status" style="font-size:0.72rem;margin-top:8px;color:var(--text3);">Not connected</div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr"><h3>📱 AppSheet Integration</h3></div>
+        <div style="font-size:0.8rem;color:var(--text2);line-height:1.8;">
+          <p>📌 วิธีเชื่อม AppSheet:</p>
+          <ol style="margin-left:16px;color:var(--text3);font-size:0.75rem;">
+            <li>สร้าง Google Sheet ชื่อ "eNGINNo_Data"</li>
+            <li>เชื่อม Apps Script URL ด้านบนก่อน</li>
+            <li>เปิด AppSheet → New App → from Google Sheets</li>
+            <li>เลือก Sheet "eNGINNo_Data"</li>
+            <li>AppSheet จะสร้าง Mobile App อัตโนมัติ</li>
+          </ol>
+        </div>
+        <div class="fg" style="margin-top:12px;">
+          <label class="fl">AppSheet App URL</label>
+          <input type="url" id="appsheet-url" class="fi" placeholder="https://www.appsheet.com/...">
+        </div>
+        <button class="btn btn-g" onclick="saveAppSheet()">💾 Save</button>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr"><h3>📈 Looker Studio</h3></div>
+        <div style="font-size:0.75rem;color:var(--text2);line-height:1.8;">
+          <p>📌 วิธีเชื่อม Looker Studio (ใน 2-3 สัปดาห์ข้างหน้า):</p>
+          <ol style="margin-left:16px;color:var(--text3);">
+            <li>เปิด lookerstudio.google.com</li>
+            <li>Create → Report → Google Sheets</li>
+            <li>เลือก Sheet ที่เชื่อม Apps Script ไว้</li>
+            <li>ออกแบบ Dashboard ตามต้องการ</li>
+          </ol>
+        </div>
+        <div class="fg" style="margin-top:12px;">
+          <label class="fl">Looker Studio URL</label>
+          <input type="url" id="looker-url" class="fi" placeholder="https://lookerstudio.google.com/...">
+        </div>
+        <button class="btn btn-g" onclick="saveLooker()">💾 Save</button>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════
+         PAGE: DASHBOARD MONITOR
+    ══════════════════════════════════ -->
+    <div class="page" id="page-monitor">
+      <div class="sec-hdr">
+        <div><h2>📊 Dashboard Monitor</h2><p>Team Progress · Engineering Innovation · Real-time</p></div>
+        <div style="display:flex;gap:6px;">
+          <select id="mon-filter-dept" class="fi" style="width:160px;padding:5px 8px;" onchange="renderMonitor()">
+            <option value="">All Functions</option>
+            <option value="B1">B1 · ENGINNO Mgmt</option>
+            <option value="B2">B2 · ESG</option>
+            <option value="B3">B3 · Process</option>
+            <option value="B4">B4 · QSHE</option>
+            <option value="B5">B5 · Standard</option>
+          </select>
+          <button class="btn btn-c" onclick="renderMonitor()">↻ Refresh</button>
+        </div>
+      </div>
+
+      <!-- Team KPI -->
+      <div class="stats-row g4" style="margin-bottom:16px;">
+        <div class="stat" style="border-color:rgba(0,245,255,0.2);">
+          <div class="sl">👥 Team Members</div>
+          <div class="sv" id="mon-members" style="color:var(--cyan);">0</div>
+        </div>
+        <div class="stat" style="border-color:rgba(16,185,129,0.2);">
+          <div class="sl">✅ งานเสร็จแล้ว</div>
+          <div class="sv" id="mon-done" style="color:var(--green);">0</div>
+        </div>
+        <div class="stat" style="border-color:rgba(245,158,11,0.2);">
+          <div class="sl">🔄 กำลังดำเนินการ</div>
+          <div class="sv" id="mon-inprog" style="color:var(--yellow);">0</div>
+        </div>
+        <div class="stat" style="border-color:rgba(239,68,68,0.2);">
+          <div class="sl">⏰ งานทั้งหมด</div>
+          <div class="sv" id="mon-total" style="color:var(--red);">0</div>
+        </div>
+      </div>
+
+      <!-- Per-person cards -->
+      <div id="monitor-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:16px;"></div>
+
+      <!-- Shared Progress Table -->
+      <div class="card">
+        <div class="card-hdr">
+          <h3>📋 Shared Progress Log — All Team</h3>
+          <span id="mon-last-sync" style="font-size:0.62rem;color:var(--text3);">—</span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="rpt-table">
+            <thead><tr>
+              <th>ชื่อ</th><th>หน่วยงาน</th><th>งาน</th>
+              <th>Stakeholder</th><th>ลำดับ</th><th>%</th><th>วันที่</th><th>ผลลัพธ์</th>
+            </tr></thead>
+            <tbody id="mon-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         PAGE: ADMIN PANEL
+    ══════════════════════════════════ -->
+    <div class="page" id="page-admin">
+      <div class="sec-hdr">
+        <div><h2>🔐 Admin Panel</h2><p>User Management · Approve / Reject</p></div>
+      </div>
+
+      <!-- Pending approvals -->
+      <div class="card" style="border-color:rgba(245,158,11,0.2);margin-bottom:14px;">
+        <div class="card-hdr"><h3 style="color:var(--yellow);">⏳ Pending Approval</h3></div>
+        <div id="admin-pending">
+          <div style="text-align:center;padding:16px;color:var(--text3);">ไม่มีคำขอที่รอการอนุมัติ</div>
+        </div>
+      </div>
+
+      <!-- All users -->
+      <div class="card">
+        <div class="card-hdr"><h3>👥 All Users</h3>
+          <span id="admin-user-count" style="font-size:0.72rem;color:var(--text3);">0 users</span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="rpt-table">
+            <thead><tr>
+              <th>ชื่อ</th><th>Username</th><th>หน่วยงาน</th><th>ตำแหน่ง</th><th>Status</th><th>สมัครวันที่</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="admin-users-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Share link -->
+      <div class="card" style="border-color:rgba(0,245,255,0.15);">
+        <div class="card-hdr"><h3>🔗 Share App to Team</h3></div>
+        <div style="font-size:0.78rem;color:var(--text2);margin-bottom:10px;">
+          แชร์ URL ไฟล์นี้ให้ทีม Engineering Innovation เข้าใช้งานได้เลย<br>
+          ทุกคนสามารถ Register และรอ Admin อนุมัติก่อนเข้าใช้งาน
+        </div>
+        <div style="background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:0.72rem;color:var(--cyan);word-break:break-all;" id="share-url">
+          — กำลังโหลด URL —
+        </div>
+        <button onclick="copyShareUrl()" class="btn btn-c" style="margin-top:8px;">📋 Copy URL</button>
+        <div style="margin-top:12px;padding:10px;background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.15);border-radius:8px;">
+          <div style="font-size:0.7rem;font-weight:700;color:var(--green);margin-bottom:6px;">📌 วิธีแชร์ให้ทีม</div>
+          <div style="font-size:0.72rem;color:var(--text3);line-height:1.7;">
+            1. Download ไฟล์ eNGINNo_SMART_Analytics_v1.html<br>
+            2. Upload ขึ้น Google Drive / SharePoint / Web Server<br>
+            3. แชร์ URL ให้ทีม → Register → รอ Admin อนุมัติ<br>
+            4. Admin login ด้วย <strong style="color:var(--cyan);">enginno / password277</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════
+         PAGE: AI ANALYTICS
+    ══════════════════════════════════ -->
+    <div class="page" id="page-ai">
+      <div class="sec-hdr">
+        <div>
+          <h2>🤖 AI Analytics</h2>
+          <p>Claude AI · วิเคราะห์งาน · แจ้งเตือน · คำแนะนำ</p>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-p" onclick="aiAutoAnalyze()">⚡ Auto Analyze</button>
+          <button class="btn btn-c" onclick="aiClearChat()">🗑️ Clear</button>
+        </div>
+      </div>
+
+      <!-- AI Alert Cards -->
+      <div id="ai-alerts-row" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:16px;"></div>
+
+      <!-- 4 Quick Action Buttons -->
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px;">
+        <button onclick="aiAsk('urgent')" style="padding:12px;border-radius:10px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:var(--red);font-size:0.8rem;font-weight:600;cursor:pointer;text-align:left;font-family:Sarabun,sans-serif;">
+          🔴 วิเคราะห์งานเร่งด่วน<br><span style="font-size:0.68rem;color:var(--text3);font-weight:400;">วิเคราะห์ Q1 งานค้างและความเสี่ยง</span>
+        </button>
+        <button onclick="aiAsk('problems')" style="padding:12px;border-radius:10px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);color:var(--yellow);font-size:0.8rem;font-weight:600;cursor:pointer;text-align:left;font-family:Sarabun,sans-serif;">
+          ⚠️ วิเคราะห์ปัญหา<br><span style="font-size:0.68rem;color:var(--text3);font-weight:400;">ค้นหา bottleneck และจุดที่ต้องแก้ไข</span>
+        </button>
+        <button onclick="aiAsk('performance')" style="padding:12px;border-radius:10px;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);color:var(--blue);font-size:0.8rem;font-weight:600;cursor:pointer;text-align:left;font-family:Sarabun,sans-serif;">
+          📊 ประสิทธิภาพทีม<br><span style="font-size:0.68rem;color:var(--text3);font-weight:400;">ตรวจสอบ user ที่ต่ำกว่า 50%</span>
+        </button>
+        <button onclick="aiAsk('recommend')" style="padding:12px;border-radius:10px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);color:var(--green);font-size:0.8rem;font-weight:600;cursor:pointer;text-align:left;font-family:Sarabun,sans-serif;">
+          💡 ขอคำแนะนำ<br><span style="font-size:0.68rem;color:var(--text3);font-weight:400;">แนะนำการจัดลำดับความสำคัญ</span>
+        </button>
+      </div>
+
+      <!-- Chat Interface -->
+      <div style="border-radius:14px;background:rgba(0,0,0,0.3);border:1px solid rgba(168,85,247,0.15);overflow:hidden;display:flex;flex-direction:column;height:420px;">
+        <!-- Chat header -->
+        <div style="padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:8px;background:rgba(168,85,247,0.06);">
+          <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#7c3aed,#00f5ff);display:flex;align-items:center;justify-content:center;font-size:0.9rem;">🤖</div>
+          <div>
+            <div style="font-family:Orbitron,sans-serif;font-size:0.72rem;font-weight:700;color:var(--purple);">Claude AI Assistant</div>
+            <div style="font-size:0.6rem;color:var(--text3);">eNGINNo SMART Analytics · Engineering Innovation</div>
+          </div>
+          <div id="ai-typing" style="margin-left:auto;display:none;align-items:center;gap:6px;font-size:0.7rem;color:var(--purple);">
+            <div style="display:flex;gap:3px;">
+              <div style="width:5px;height:5px;border-radius:50%;background:var(--purple);animation:bounce 1s infinite;"></div>
+              <div style="width:5px;height:5px;border-radius:50%;background:var(--purple);animation:bounce 1s .2s infinite;"></div>
+              <div style="width:5px;height:5px;border-radius:50%;background:var(--purple);animation:bounce 1s .4s infinite;"></div>
+            </div>
+            กำลังวิเคราะห์...
+          </div>
+        </div>
+        <!-- Chat messages -->
+        <div id="ai-messages" style="flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;">
+          <div style="text-align:center;padding:20px;color:var(--text3);">
+            <div style="font-size:1.5rem;margin-bottom:8px;">🤖</div>
+            <div style="font-size:0.8rem;">สวัสดีครับ! ผมคือ AI Assistant ของ eNGINNo<br>กด Quick Action ด้านบน หรือพิมพ์คำถามได้เลยครับ</div>
+          </div>
+        </div>
+        <!-- Chat input -->
+        <div style="padding:10px 14px;border-top:1px solid rgba(255,255,255,0.06);display:flex;gap:8px;background:rgba(0,0,0,0.2);">
+          <input type="text" id="ai-input" class="fi" placeholder="พิมพ์คำถามหรือขอคำแนะนำ..." style="flex:1;"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSendMessage();}">
+          <button onclick="aiSendMessage()" style="padding:7px 16px;background:linear-gradient(135deg,rgba(168,85,247,0.3),rgba(0,245,255,0.2));border:1px solid rgba(168,85,247,0.3);border-radius:8px;color:var(--purple);font-size:0.8rem;cursor:pointer;white-space:nowrap;font-family:Sarabun,sans-serif;font-weight:700;">
+            ส่ง ➤
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- end content -->
+</div><!-- end main -->
+</div><!-- end shell -->
+
+<!-- ══ MODAL: ADD TASK ══ -->
+<div class="modal" id="modal-task">
+<div class="modal-box">
+  <div class="modal-hdr">
+    <h3 id="task-modal-title">＋ Add Task</h3>
+    <button class="modal-close" onclick="closeModal('modal-task')">×</button>
+  </div>
+  <div class="fg">
+    <label class="fl">Task Title *</label>
+    <input type="text" id="t-title" class="fi" placeholder="ชื่องาน...">
+  </div>
+  <div class="fg2">
+    <div class="fg">
+      <label class="fl">Quadrant *</label>
+      <select id="t-quad" class="fi">
+        <option value="q1">🔴 สำคัญ/เร่งด่วน (DO FIRST)</option>
+        <option value="q2">🟢 สำคัญ/ไม่เร่งด่วน (SCHEDULE)</option>
+        <option value="q3">🟡 ไม่สำคัญ/เร่งด่วน (DELEGATE)</option>
+        <option value="q4">⚪ ไม่สำคัญ/ไม่เร่งด่วน (ELIMINATE)</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label class="fl">Stakeholder</label>
+      <select id="t-sh" class="fi">
+        <option value="">— เลือก —</option>
+      </select>
+    </div>
+  </div>
+  <div class="fg2">
+    <div class="fg">
+      <label class="fl">วันที่รับเข้า</label>
+      <input type="datetime-local" id="t-received" class="fi">
+    </div>
+    <div class="fg">
+      <label class="fl">กำหนดเสร็จ *</label>
+      <input type="datetime-local" id="t-due" class="fi">
+    </div>
+  </div>
+  <div class="fg2">
+    <div class="fg">
+      <label class="fl">ผู้รับผิดชอบ</label>
+      <input type="text" id="t-owner" class="fi" placeholder="ชื่อผู้รับผิดชอบ">
+    </div>
+    <div class="fg">
+      <label class="fl">Progress %</label>
+      <select id="t-prog" class="fi">
+        <option value="0">0%</option><option value="25">25%</option>
+        <option value="50">50%</option><option value="75">75%</option><option value="100">100%</option>
+      </select>
+    </div>
+  </div>
+  <div class="fg">
+    <label class="fl">รายละเอียด</label>
+    <textarea id="t-detail" class="fi" placeholder="รายละเอียดงาน..."></textarea>
+  </div>
+  <div class="fg">
+    <label class="fl">ผลลัพธ์ที่คาดหวัง</label>
+    <input type="text" id="t-result" class="fi" placeholder="Expected result...">
+  </div>
+  <div class="form-actions">
+    <button class="btn btn-r" onclick="closeModal('modal-task')">Cancel</button>
+    <button class="btn btn-g" onclick="saveTask()">💾 Save Task</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ MODAL: ADD PROGRESS ══ -->
+<div class="modal" id="modal-progress">
+<div class="modal-box">
+  <div class="modal-hdr">
+    <h3>📊 Add Progress Report</h3>
+    <button class="modal-close" onclick="closeModal('modal-progress')">×</button>
+  </div>
+  <div class="fg2">
+    <div class="fg">
+      <label class="fl">วันที่ *</label>
+      <input type="date" id="p-date" class="fi">
+    </div>
+    <div class="fg">
+      <label class="fl">เวลา</label>
+      <input type="time" id="p-time" class="fi">
+    </div>
+  </div>
+  <div class="fg">
+    <label class="fl">งานที่ดำเนินการ *</label>
+    <input type="text" id="p-task" class="fi" placeholder="ชื่องาน...">
+  </div>
+  <div class="fg">
+    <label class="fl">รายละเอียด</label>
+    <textarea id="p-detail" class="fi" placeholder="รายละเอียดของงาน..."></textarea>
+  </div>
+  <div class="fg3">
+    <div class="fg">
+      <label class="fl">Stakeholder</label>
+      <select id="p-sh" class="fi"><option value="">— เลือก —</option></select>
+    </div>
+    <div class="fg">
+      <label class="fl">ลำดับความสำคัญ</label>
+      <select id="p-prio" class="fi">
+        <option>Critical</option><option>High</option><option>Medium</option><option>Low</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label class="fl">% ความคืบหน้า</label>
+      <select id="p-prog" class="fi">
+        <option value="0">0%</option><option value="25">25%</option>
+        <option value="50">50%</option><option value="75">75%</option><option value="100">100% Done</option>
+      </select>
+    </div>
+  </div>
+  <div class="fg2">
+    <div class="fg">
+      <label class="fl">ผู้ดำเนินการ</label>
+      <input type="text" id="p-by" class="fi" placeholder="ชื่อ">
+    </div>
+    <div class="fg">
+      <label class="fl">ผู้ติดตาม</label>
+      <input type="text" id="p-follow" class="fi" placeholder="ชื่อผู้ติดตาม">
+    </div>
+  </div>
+  <div class="fg">
+    <label class="fl">ผลลัพธ์ที่จะได้รับ</label>
+    <input type="text" id="p-result" class="fi" placeholder="Expected outcome...">
+  </div>
+  <div class="fg">
+    <label class="fl" style="color:var(--purple);">Executive Comment (ผู้บริหาร)</label>
+    <input type="text" id="p-exec-comment" class="fi" placeholder="comment จากผู้บริหาร...">
+  </div>
+  <div class="form-actions">
+    <button class="btn btn-r" onclick="closeModal('modal-progress')">Cancel</button>
+    <button class="btn btn-g" onclick="saveProgress()">💾 Save Progress</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ MODAL: TOILET ══ -->
+<div class="modal" id="modal-toilet">
+<div class="modal-box" style="max-width:500px;">
+  <div class="modal-hdr">
+    <h3>🚽 TOILET Self-Assessment</h3>
+    <button class="modal-close" onclick="closeModal('modal-toilet')">×</button>
+  </div>
+  <div class="fg2">
+    <div class="fg"><label class="fl">ชื่อผู้ประเมิน</label><input type="text" id="tl-name" class="fi" placeholder="ชื่อ"></div>
+    <div class="fg"><label class="fl">Organization</label>
+      <select id="tl-org" class="fi"><option value="">— เลือก —</option></select>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+    <div class="fg"><label class="fl">🔍 T — Transparency (1-5)</label><input type="number" id="tl-T" class="fi" min="1" max="5" placeholder="1-5"></div>
+    <div class="fg"><label class="fl">🏆 O — Ownership (1-5)</label><input type="number" id="tl-O" class="fi" min="1" max="5" placeholder="1-5"></div>
+    <div class="fg"><label class="fl">🎯 I — Incentive (1-5)</label><input type="number" id="tl-I" class="fi" min="1" max="5" placeholder="1-5"></div>
+    <div class="fg"><label class="fl">👂 L — Listening (1-5)</label><input type="number" id="tl-L" class="fi" min="1" max="5" placeholder="1-5"></div>
+    <div class="fg"><label class="fl">💝 E — Empathy (1-5)</label><input type="number" id="tl-E" class="fi" min="1" max="5" placeholder="1-5"></div>
+    <div class="fg"><label class="fl">💎 T — Trusted (1-5)</label><input type="number" id="tl-T2" class="fi" min="1" max="5" placeholder="1-5"></div>
+  </div>
+  <div class="fg"><label class="fl">สิ่งที่อยากบอกผู้บริหาร (L in TOILET)</label>
+    <textarea id="tl-feedback" class="fi" placeholder="ปัญหา ข้อเสนอแนะ ไอเดีย..."></textarea>
+  </div>
+  <div class="form-actions">
+    <button class="btn btn-r" onclick="closeModal('modal-toilet')">Cancel</button>
+    <button class="btn btn-g" onclick="saveToilet()">💾 Submit</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ MODAL: DMAIC ══ -->
+<div class="modal" id="modal-dmaic">
+<div class="modal-box">
+  <div class="modal-hdr">
+    <h3>📐 Add DMAIC Project</h3>
+    <button class="modal-close" onclick="closeModal('modal-dmaic')">×</button>
+  </div>
+  <div class="fg2">
+    <div class="fg"><label class="fl">ชื่อโครงการ *</label><input type="text" id="dm-name" class="fi" placeholder="Project name"></div>
+    <div class="fg"><label class="fl">DMAIC Phase</label>
+      <select id="dm-phase" class="fi">
+        <option>D - Define</option><option>M - Measure</option>
+        <option>A - Analyze</option><option>I - Improve</option><option>C - Control</option>
+      </select>
+    </div>
+  </div>
+  <div class="fg2">
+    <div class="fg"><label class="fl">Stakeholder</label>
+      <select id="dm-sh" class="fi"><option value="">— เลือก —</option></select>
+    </div>
+    <div class="fg"><label class="fl">Progress %</label>
+      <select id="dm-prog" class="fi">
+        <option value="0">0%</option><option value="25">25%</option>
+        <option value="50">50%</option><option value="75">75%</option><option value="100">100%</option>
+      </select>
+    </div>
+  </div>
+  <div class="fg"><label class="fl">รายละเอียด</label><textarea id="dm-detail" class="fi" placeholder="รายละเอียดโครงการ..."></textarea></div>
+  <div class="fg2">
+    <div class="fg"><label class="fl">Start Date</label><input type="date" id="dm-start" class="fi"></div>
+    <div class="fg"><label class="fl">Target Date</label><input type="date" id="dm-target" class="fi"></div>
+  </div>
+  <div class="fg"><label class="fl">Expected Benefit / KPI</label><input type="text" id="dm-kpi" class="fi" placeholder="ผลที่คาดหวัง..."></div>
+  <div class="form-actions">
+    <button class="btn btn-r" onclick="closeModal('modal-dmaic')">Cancel</button>
+    <button class="btn btn-g" onclick="saveDMAIC()">💾 Save Project</button>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// DATA CONSTANTS
+// ═══════════════════════════════════════════════════
+const STAKEHOLDERS = [
+  { code:'A1',  name:'CEO & CFSO Management',           icon:'👑', color:'#f59e0b' },
+  { code:'A2',  name:'Township Management',             icon:'🏙️', color:'#3b82f6' },
+  { code:'A3',  name:'Business Strategy & Investment',  icon:'📈', color:'#10b981' },
+  { code:'A4',  name:'BEAT Discovery',                  icon:'💡', color:'#a855f7' },
+  { code:'A5',  name:'Procurement',                     icon:'📦', color:'#f97316' },
+  { code:'A6',  name:'About Food',                      icon:'🍽️', color:'#ec4899' },
+  { code:'A7',  name:'Live & Play Business',            icon:'🎯', color:'#00f5ff' },
+  { code:'A8',  name:'Project Delivery',                icon:'🏗️', color:'#f59e0b' },
+  { code:'A9',  name:'REIT Management',                 icon:'🏢', color:'#3b82f6' },
+  { code:'A10', name:'SAMA Garden',                     icon:'🌿', color:'#10b981' },
+  { code:'A11', name:'BHIRAJ & Beyond Venture',         icon:'🚀', color:'#a855f7' },
+  { code:'A12', name:'Workplace Management',            icon:'💼', color:'#f97316' },
+  { code:'A13', name:'Another Business',                icon:'🌐', color:'#6b7280' },
+];
+const ENGINNO_FNS = [
+  { code:'B1', name:'ENGINNO Management',               icon:'⚙️',  color:'#00f5ff' },
+  { code:'B2', name:'ESG Management',                   icon:'🌍', color:'#10b981' },
+  { code:'B3', name:'Internal Control & Process',       icon:'📐', color:'#a855f7' },
+  { code:'B4', name:'QSHE Management',                  icon:'🛡️', color:'#3b82f6' },
+  { code:'B5', name:'Standard & Operation Excellence', icon:'⭐', color:'#f59e0b' },
+];
+
+// ═══════════════════════════════════════════════════
+// LOCAL STORAGE
+// ═══════════════════════════════════════════════════
+const K = { tasks:'eng_tasks', progress:'eng_progress', toilet:'eng_toilet',
+            dmaic:'eng_dmaic', comments:'eng_comments', gs:'eng_gs_url',
+            appsheet:'eng_appsheet', looker:'eng_looker' };
+function load(k) { try { return JSON.parse(localStorage.getItem(k)) || []; } catch(e) { return []; } }
+function save(k,d){ try { localStorage.setItem(k, JSON.stringify(d)); } catch(e) {} }
+function loadStr(k){ return localStorage.getItem(k) || ''; }
+
+// ═══════════════════════════════════════════════════
+// CLOCK
+// ═══════════════════════════════════════════════════
+function tick() {
+    var n = new Date();
+    var te = document.getElementById('clk-time');
+    var de = document.getElementById('clk-date');
+    if (te) te.textContent = n.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    if (de) de.textContent = n.toLocaleDateString('th-TH',{weekday:'short',year:'numeric',month:'short',day:'numeric'});
+}
+setInterval(tick, 1000); tick();
+
+// ═══════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════
+var _curPage = 'daily';
+var PAGE_META = {
+  monitor:     ['Dashboard Monitor', 'Team Progress · Engineering Innovation', '', ''],
+  ai:          ['AI Analytics', 'Claude AI · วิเคราะห์งาน · ปัญหา · คำแนะนำ', '', ''],
+  daily:       ['Daily Plan', 'Eisenhower Matrix · Task Management', '＋ Add Task', 'openAddTask()'],
+  progress:    ['Daily Progress', 'บันทึกความคืบหน้า · ส่งผู้บริหาร/ทีม', '＋ Add Progress', 'openAddProgress()'],
+  weekly:      ['Weekly Report', 'ภาพรวมรายสัปดาห์', '', ''],
+  monthly:     ['Monthly Executive', 'รายงานสรุปผู้บริหาร', '', ''],
+  stakeholder: ['Stakeholders', '13 Organizations · PSD', '', ''],
+  enginno:     ['eNGINNo Functions', 'B1–B5 · Engineering Innovation Central', '', ''],
+  toilet:      ['TOILET Assessment', 'T·O·I·L·E·T Framework', '＋ Assess', 'openToiletModal()'],
+  dmaic:       ['DMAIC Projects', 'Six Sigma · Process Improvement', '＋ Project', 'openDMAICModal()'],
+  connect:     ['Data Connection', 'AppSheet · Looker Studio', '', ''],
+  admin:       ['Admin Panel', 'User Management · Approve / Reject', '', ''],
+};
+
+function nav(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.sb-item').forEach(n => n.classList.remove('active'));
+    var pg = document.getElementById('page-' + id);
+    var nv = document.getElementById('nav-' + id);
+    if (pg) pg.classList.add('active');
+    if (nv) nv.classList.add('active');
+    _curPage = id;
+    var m = PAGE_META[id] || [id, '', '', ''];
+    document.getElementById('tb-title').textContent = m[0];
+    document.getElementById('tb-sub').textContent   = m[1];
+    var addBtn = document.getElementById('tb-add-btn');
+    if (m[2]) { addBtn.style.display=''; addBtn.textContent=m[2]; addBtn.onclick=new Function(m[3]); }
+    else { addBtn.style.display='none'; }
+    // Render
+    var renders = { monitor:renderMonitor, ai:renderAI, daily:renderDaily, progress:renderProgress, weekly:renderWeekly,
+                    monthly:renderMonthly, stakeholder:renderStakeholder,
+                    enginno:renderEnginno, toilet:renderToilet, dmaic:renderDmaic, connect:renderConnect, admin:renderAdmin };
+    if (renders[id]) renders[id]();
+}
+
+function toggleSB() {
+    document.getElementById('sidebar').classList.toggle('collapsed');
+}
+
+// ═══════════════════════════════════════════════════
+// POPULATE SELECTS
+// ═══════════════════════════════════════════════════
+function populateSelects() {
+    var allSH = [...STAKEHOLDERS, ...ENGINNO_FNS];
+    ['t-sh','p-sh','dm-sh','tl-org'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.innerHTML = '<option value="">— เลือก —</option>' +
+            allSH.map(s => '<option value="'+s.code+'">'+s.icon+' '+s.code+' '+s.name+'</option>').join('');
+    });
+}
+
+// ═══════════════════════════════════════════════════
+// DAILY PLAN
+// ═══════════════════════════════════════════════════
+var _editTaskId = null;
+
+function renderDaily() {
+    var dateFilter = document.getElementById('daily-date-filter').value ||
+                     new Date().toISOString().split('T')[0];
+    var label = document.getElementById('daily-date-label');
+    if (label) {
+        var d = new Date(dateFilter + 'T00:00:00');
+        label.textContent = d.toLocaleDateString('th-TH',{weekday:'long',year:'numeric',month:'long',day:'numeric'}) + ' · Eisenhower Matrix';
+    }
+
+    var tasks = load(K.tasks).filter(function(t) {
+        return !t.due || t.due.startsWith(dateFilter);
+    });
+
+    ['q1','q2','q3','q4'].forEach(function(q) {
+        var qTasks = tasks.filter(t => t.quad === q);
+        var el = document.getElementById(q + '-tasks');
+        var cnt = document.getElementById('cnt-' + q);
+        if (cnt) cnt.textContent = qTasks.length;
+        if (!el) return;
+        if (!qTasks.length) {
+            el.innerHTML = '<div style="font-size:0.7rem;color:var(--text3);text-align:center;padding:16px;">ไม่มีงาน</div>';
+            return;
+        }
+        var pc = {q1:'var(--red)',q2:'var(--green)',q3:'var(--yellow)',q4:'var(--text3)'};
+        el.innerHTML = qTasks.map(function(t) {
+            var prog = parseInt(t.prog)||0;
+            var done = prog === 100;
+            var sh = [...STAKEHOLDERS,...ENGINNO_FNS].find(s => s.code === t.sh);
+            var due = t.due ? new Date(t.due) : null;
+            var isOD = due && due < new Date() && !done;
+            return '<div class="task-item'+(done?' task-done':'')+'" onclick="editTask(\''+t.id+'\')">' +
+                '<div class="task-title">'+(done?'✅ ':'')+t.title+'</div>' +
+                '<div class="task-meta">' +
+                (sh ? '<span>'+sh.icon+' '+sh.code+'</span>' : '') +
+                (t.due ? '<span style="color:'+(isOD?'var(--red)':'var(--text3)')+'">⏰ '+new Date(t.due).toLocaleDateString('th-TH',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})+'</span>' : '') +
+                (t.owner ? '<span>👤 '+t.owner+'</span>' : '') +
+                '</div>' +
+                '<div class="task-prog"><div class="task-prog-fill" style="width:'+prog+'%;background:'+pc[q]+';"></div></div>' +
+                '<div style="font-size:0.6rem;color:'+pc[q]+';margin-top:2px;">'+prog+'%</div>' +
+                '</div>';
+        }).join('');
+    });
+
+    // Update nav badge
+    var urgent = load(K.tasks).filter(t => t.quad==='q1' && parseInt(t.prog||0)<100).length;
+    var nb = document.getElementById('nb-urgent');
+    if (nb) { nb.textContent=urgent; nb.style.display=urgent?'':'none'; }
+}
+
+function openAddTask(quad) {
+    _editTaskId = null;
+    document.getElementById('task-modal-title').textContent = '＋ Add Task';
+    document.getElementById('t-title').value  = '';
+    document.getElementById('t-detail').value = '';
+    document.getElementById('t-result').value = '';
+    document.getElementById('t-owner').value  = '';
+    document.getElementById('t-prog').value   = '0';
+    if (quad) document.getElementById('t-quad').value = quad;
+    var now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    document.getElementById('t-received').value = now.toISOString().slice(0,16);
+    openModal('modal-task');
+}
+
+function editTask(id) {
+    var tasks = load(K.tasks);
+    var t = tasks.find(x => x.id === id);
+    if (!t) return;
+    _editTaskId = id;
+    document.getElementById('task-modal-title').textContent = '✏️ Edit Task';
+    document.getElementById('t-title').value    = t.title||'';
+    document.getElementById('t-quad').value     = t.quad||'q1';
+    document.getElementById('t-sh').value       = t.sh||'';
+    document.getElementById('t-received').value = t.received||'';
+    document.getElementById('t-due').value      = t.due||'';
+    document.getElementById('t-owner').value    = t.owner||'';
+    document.getElementById('t-prog').value     = t.prog||'0';
+    document.getElementById('t-detail').value   = t.detail||'';
+    document.getElementById('t-result').value   = t.result||'';
+    openModal('modal-task');
+}
+
+function saveTask() {
+    var title = document.getElementById('t-title').value.trim();
+    if (!title) { showToast('กรุณากรอก Task Title','warn'); return; }
+    var tasks = load(K.tasks);
+    var task = {
+        id       : _editTaskId || 'T-' + Date.now(),
+        title,
+        quad     : document.getElementById('t-quad').value,
+        sh       : document.getElementById('t-sh').value,
+        received : document.getElementById('t-received').value,
+        due      : document.getElementById('t-due').value,
+        owner    : document.getElementById('t-owner').value,
+        prog     : document.getElementById('t-prog').value,
+        detail   : document.getElementById('t-detail').value,
+        result   : document.getElementById('t-result').value,
+        created  : new Date().toISOString(),
+    };
+    if (_editTaskId) {
+        var idx = tasks.findIndex(x => x.id === _editTaskId);
+        if (idx >= 0) tasks[idx] = task;
+    } else { tasks.push(task); }
+    save(K.tasks, tasks);
+    closeModal('modal-task');
+    renderDaily();
+    showToast('✅ Task saved','success');
+    syncToGS(task);
+}
+
+// ═══════════════════════════════════════════════════
+// DAILY PROGRESS
+// ═══════════════════════════════════════════════════
+function renderProgress() {
+    var progs = load(K.progress);
+    var tbody = document.getElementById('progress-tbody');
+    if (!tbody) return;
+    if (!progs.length) {
+        tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:30px;color:var(--text3);">ยังไม่มีรายการ — กด "+ Add Progress"</td></tr>';
+        return;
+    }
+    var prioColor = {Critical:'b-r',High:'b-o',Medium:'b-y',Low:'b-g'};
+    var progColor = function(p) { return p>=100?'var(--green)':p>=50?'var(--yellow)':'var(--red)'; };
+    tbody.innerHTML = progs.slice().reverse().map(function(p) {
+        var sh = [...STAKEHOLDERS,...ENGINNO_FNS].find(s => s.code === p.sh);
+        var prog = parseInt(p.prog)||0;
+        return '<tr>' +
+            '<td style="white-space:nowrap;font-size:0.7rem;color:var(--text3);">'+p.date+(p.time?' '+p.time:'')+'</td>' +
+            '<td style="font-weight:600;">'+p.task+'</td>' +
+            '<td style="max-width:200px;font-size:0.72rem;color:var(--text2);">'+(p.detail||'—')+'</td>' +
+            '<td>'+(sh?'<span class="badge b-c">'+sh.icon+' '+sh.code+'</span>':'—')+'</td>' +
+            '<td><span class="badge '+(prioColor[p.prio]||'b-b')+'">'+p.prio+'</span></td>' +
+            '<td><div class="prog-bar"><div class="prog-fill" style="width:'+prog+'%;background:'+progColor(prog)+';"></div></div><span style="font-size:0.65rem;color:'+progColor(prog)+';">'+prog+'%</span></td>' +
+            '<td style="font-size:0.72rem;">'+(p.result||'—')+'</td>' +
+            '<td style="font-size:0.72rem;">'+(p.by||'—')+'</td>' +
+            '<td style="font-size:0.72rem;">'+(p.follow||'—')+'</td>' +
+            '<td style="max-width:160px;font-size:0.7rem;color:var(--purple);">'+(p.execComment||'—')+'</td>' +
+            '<td><button class="btn btn-r" style="padding:2px 7px;font-size:0.6rem;" onclick="deleteProgress(\''+p.id+'\')">🗑️</button></td>' +
+            '</tr>';
+    }).join('');
+}
+
+function openAddProgress() {
+    var today = new Date().toISOString().split('T')[0];
+    var now   = new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('p-date').value = today;
+    document.getElementById('p-time').value = now;
+    ['p-task','p-detail','p-result','p-by','p-follow','p-exec-comment'].forEach(id => {
+        var el = document.getElementById(id); if (el) el.value='';
+    });
+    document.getElementById('p-prio').value = 'High';
+    document.getElementById('p-prog').value = '0';
+    openModal('modal-progress');
+}
+
+function saveProgress() {
+    var task = document.getElementById('p-task').value.trim();
+    if (!task) { showToast('กรุณากรอกงาน','warn'); return; }
+    var progs = load(K.progress);
+    var p = {
+        id          : 'P-' + Date.now(),
+        date        : document.getElementById('p-date').value,
+        time        : document.getElementById('p-time').value,
+        task,
+        detail      : document.getElementById('p-detail').value,
+        sh          : document.getElementById('p-sh').value,
+        prio        : document.getElementById('p-prio').value,
+        prog        : document.getElementById('p-prog').value,
+        result      : document.getElementById('p-result').value,
+        by          : document.getElementById('p-by').value,
+        follow      : document.getElementById('p-follow').value,
+        execComment : document.getElementById('p-exec-comment').value,
+        created     : new Date().toISOString(),
+    };
+    progs.push(p);
+    save(K.progress, progs);
+    closeModal('modal-progress');
+    renderProgress();
+    showToast('✅ Progress saved','success');
+    syncToGS(p);
+}
+
+function deleteProgress(id) {
+    if (!confirm('Delete?')) return;
+    save(K.progress, load(K.progress).filter(p => p.id !== id));
+    renderProgress();
+}
+
+// ═══════════════════════════════════════════════════
+// WEEKLY
+// ═══════════════════════════════════════════════════
+var _weekOffset = 0;
+
+function weekNav(dir) { _weekOffset += dir; renderWeekly(); }
+
+function renderWeekly() {
+    var today = new Date();
+    var weekStart = new Date(today);
+    weekStart.setDate(today.getDate() - today.getDay() + (_weekOffset * 7));
+    var weekEnd = new Date(weekStart); weekEnd.setDate(weekStart.getDate() + 6);
+
+    var label = document.getElementById('week-label');
+    if (label) label.textContent = weekStart.toLocaleDateString('th-TH',{month:'short',day:'numeric'}) +
+        ' — ' + weekEnd.toLocaleDateString('th-TH',{month:'short',day:'numeric',year:'numeric'});
+
+    var days = ['อา','จ','อ','พ','พฤ','ศ','ส'];
+    var progs = load(K.progress);
+    var grid = document.getElementById('week-grid');
+    if (grid) {
+        var html = '';
+        for (var i = 0; i < 7; i++) {
+            var d = new Date(weekStart); d.setDate(weekStart.getDate() + i);
+            var dStr = d.toISOString().split('T')[0];
+            var isToday = dStr === today.toISOString().split('T')[0];
+            var dayProgs = progs.filter(p => p.date === dStr);
+            html += '<div class="day-col'+(isToday?' today':'')+'">'+
+                '<div class="day-name">'+days[d.getDay()]+'</div>'+
+                '<div class="day-num">'+d.getDate()+'</div>'+
+                dayProgs.slice(0,3).map(p => '<div class="day-task" title="'+p.task+'">'+p.task.substring(0,15)+(p.task.length>15?'…':'')+'</div>').join('')+
+                (dayProgs.length>3?'<div style="font-size:0.58rem;color:var(--text3);text-align:center;">+'+( dayProgs.length-3)+' more</div>':'')+
+            '</div>';
+        }
+        grid.innerHTML = html;
+    }
+
+    // Weekly table
+    var weekProgs = progs.filter(function(p) {
+        var pd = new Date(p.date);
+        return pd >= weekStart && pd <= weekEnd;
+    });
+    var tbody = document.getElementById('weekly-tbody');
+    if (tbody) {
+        if (!weekProgs.length) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text3);">ไม่มีรายการสัปดาห์นี้</td></tr>';
+        } else {
+            tbody.innerHTML = weekProgs.map(function(p) {
+                var sh = [...STAKEHOLDERS,...ENGINNO_FNS].find(s => s.code === p.sh);
+                var prog = parseInt(p.prog)||0;
+                var sc = prog>=100?'b-g':prog>=50?'b-y':'b-r';
+                return '<tr>' +
+                    '<td style="font-size:0.7rem;color:var(--text3);">'+p.date+'</td>' +
+                    '<td style="font-weight:600;">'+p.task+'</td>' +
+                    '<td>'+(sh?sh.icon+' '+sh.code:'—')+'</td>' +
+                    '<td><span class="badge '+sc+'">'+prog+'%</span></td>' +
+                    '<td><div class="prog-bar"><div class="prog-fill" style="width:'+prog+'%;background:'+(prog>=100?'var(--green)':prog>=50?'var(--yellow)':'var(--red)')+';"></div></div></td>' +
+                    '<td style="font-size:0.72rem;color:var(--text3);">'+(p.result||'—')+'</td>' +
+                    '</tr>';
+            }).join('');
+        }
+    }
+
+    // KPI
+    setEl('wk-total', weekProgs.length);
+    setEl('wk-done',  weekProgs.filter(p=>parseInt(p.prog||0)>=100).length);
+    setEl('wk-prog',  weekProgs.filter(p=>parseInt(p.prog||0)>0&&parseInt(p.prog||0)<100).length);
+}
+
+// ═══════════════════════════════════════════════════
+// MONTHLY
+// ═══════════════════════════════════════════════════
+function renderMonthly() {
+    // Populate month select
+    var ms = document.getElementById('month-select');
+    if (ms && !ms.options.length) {
+        var now = new Date();
+        for (var i = 0; i < 12; i++) {
+            var d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+            var key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+            var opt = document.createElement('option');
+            opt.value = key;
+            opt.textContent = d.toLocaleDateString('th-TH',{month:'long',year:'numeric'});
+            ms.appendChild(opt);
+        }
+    }
+    var selMonth = ms ? ms.value : '';
+    if (!selMonth) return;
+
+    var progs = load(K.progress).filter(p => p.date && p.date.startsWith(selMonth));
+    var tasks = load(K.tasks);
+    var totalProg = progs.length ? Math.round(progs.reduce((s,p)=>s+(parseInt(p.prog)||0),0)/progs.length) : 0;
+    var shSet = new Set(progs.filter(p=>p.sh).map(p=>p.sh));
+
+    setEl('mo-total', progs.length);
+    setEl('mo-done',  progs.filter(p=>parseInt(p.prog||0)>=100).length);
+    setEl('mo-sh',    shSet.size);
+    setEl('mo-avg',   totalProg+'%');
+
+    // Summary
+    var summary = document.getElementById('monthly-summary');
+    if (summary) {
+        if (!progs.length) {
+            summary.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text3);"><div style="font-size:2rem;margin-bottom:8px;">📈</div><p>ยังไม่มีข้อมูลเดือนนี้</p></div>';
+        } else {
+            var byDate = {};
+            progs.forEach(p => { if (!byDate[p.date]) byDate[p.date]=[];  byDate[p.date].push(p); });
+            summary.innerHTML = '<div style="background:rgba(0,245,255,0.04);border:1px solid rgba(0,245,255,0.1);border-radius:10px;padding:14px;margin-bottom:12px;">' +
+                '<div style="font-size:0.72rem;font-weight:700;color:var(--cyan);margin-bottom:8px;">📊 Executive Summary — ' + new Date(selMonth+'-01').toLocaleDateString('th-TH',{month:'long',year:'numeric'}) + '</div>' +
+                '<div style="font-size:0.8rem;color:var(--text2);line-height:1.8;">' +
+                '• ดำเนินงานทั้งหมด <strong style="color:var(--cyan);">' + progs.length + '</strong> รายการ<br>' +
+                '• เสร็จสมบูรณ์ <strong style="color:var(--green);">' + progs.filter(p=>parseInt(p.prog||0)>=100).length + '</strong> รายการ<br>' +
+                '• เกี่ยวข้องกับ <strong style="color:var(--purple);">' + shSet.size + '</strong> stakeholders<br>' +
+                '• Average progress: <strong style="color:var(--yellow);">' + totalProg + '%</strong><br>' +
+                '</div></div>' +
+                Object.keys(byDate).sort().map(function(date) {
+                    return '<div style="margin-bottom:8px;"><div style="font-size:0.7rem;color:var(--cyan);font-weight:700;margin-bottom:4px;">📅 ' + new Date(date+'T00:00:00').toLocaleDateString('th-TH',{weekday:'short',month:'short',day:'numeric'}) + '</div>' +
+                        byDate[date].map(p => '<div style="font-size:0.75rem;padding:4px 8px;border-left:2px solid rgba(0,245,255,0.2);margin-bottom:3px;color:var(--text2);">• '+p.task+' <span style="color:var(--green);">['+p.prog+'%]</span></div>').join('') +
+                    '</div>';
+                }).join('');
+        }
+    }
+
+    // Comments
+    var comments = load(K.comments).filter(c => c.month === selMonth);
+    var commentsEl = document.getElementById('monthly-comments');
+    if (commentsEl) {
+        commentsEl.innerHTML = comments.length ? comments.map(c =>
+            '<div class="comment-item"><div>💬 '+c.text+'</div><div class="ca">โดย '+c.by+' · '+c.date+'</div></div>'
+        ).join('') : '<div style="font-size:0.75rem;color:var(--text3);">ยังไม่มี comment</div>';
+    }
+}
+
+function addComment() {
+    var text = (document.getElementById('new-comment')||{}).value || '';
+    var by   = (document.getElementById('comment-by')||{}).value || '';
+    if (!text) return;
+    var ms = document.getElementById('month-select');
+    var selMonth = ms ? ms.value : new Date().toISOString().slice(0,7);
+    var comments = load(K.comments);
+    comments.push({ id:'C-'+Date.now(), month:selMonth, text, by:by||'ผู้บริหาร',
+                    date:new Date().toLocaleDateString('th-TH') });
+    save(K.comments, comments);
+    document.getElementById('new-comment').value = '';
+    renderMonthly();
+    showToast('✅ Comment added','success');
+}
+
+// ═══════════════════════════════════════════════════
+// STAKEHOLDER & ENGINNO
+// ═══════════════════════════════════════════════════
+function renderStakeholder() {
+    var tasks   = load(K.tasks);
+    var progs   = load(K.progress);
+    var grid = document.getElementById('stakeholder-grid');
+    if (!grid) return;
+    grid.innerHTML = STAKEHOLDERS.map(function(s) {
+        var shTasks  = tasks.filter(t => t.sh === s.code);
+        var shProgs  = progs.filter(p => p.sh === s.code);
+        var pending  = shTasks.filter(t => parseInt(t.prog||0) < 100).length;
+        var done     = shTasks.filter(t => parseInt(t.prog||0) >= 100).length;
+        return '<div class="sh-card" onclick="filterBySH(\''+s.code+'\')">'+
+            '<div class="sh-icon">'+s.icon+'</div>'+
+            '<div class="sh-name">'+s.name+'</div>'+
+            '<div class="sh-code" style="color:'+s.color+';">'+s.code+' · PSD_Stakeholder</div>'+
+            '<div class="sh-stat">'+
+              (pending?'<span class="badge b-y">'+pending+' pending</span>':'')+
+              (done?'<span class="badge b-g">'+done+' done</span>':'')+
+              (shProgs.length?'<span class="badge b-c">'+shProgs.length+' progress</span>':'')+
+              (!pending&&!done?'<span class="badge" style="background:rgba(255,255,255,0.05);color:var(--text3);">ยังไม่มีงาน</span>':'')+
+            '</div>'+
+        '</div>';
+    }).join('');
+}
+
+function renderEnginno() {
+    var tasks = load(K.tasks);
+    var grid = document.getElementById('enginno-grid');
+    if (!grid) return;
+    grid.innerHTML = ENGINNO_FNS.map(function(s) {
+        var shTasks = tasks.filter(t => t.sh === s.code);
+        return '<div class="sh-card" onclick="filterBySH(\''+s.code+'\')">'+
+            '<div class="sh-icon">'+s.icon+'</div>'+
+            '<div class="sh-name">'+s.name+'</div>'+
+            '<div class="sh-code" style="color:'+s.color+';">'+s.code+' · PSD_ENGINNO</div>'+
+            '<div class="sh-stat">'+
+              (shTasks.length?'<span class="badge b-c">'+shTasks.length+' tasks</span>':'<span class="badge" style="background:rgba(255,255,255,0.05);color:var(--text3);">ยังไม่มีงาน</span>')+
+            '</div>'+
+        '</div>';
+    }).join('');
+}
+
+function filterBySH(code) {
+    nav('daily');
+    // Show all tasks for this SH
+    var dateFilter = document.getElementById('daily-date-filter');
+    if (dateFilter) dateFilter.value = '';
+    var allTasks = load(K.tasks).filter(t => t.sh === code);
+    // Temporarily override to show all dates for this SH
+    showToast('Filtering by: ' + code, 'info');
+    // Simple: just nav to daily and show all
+    renderDaily();
+}
+
+// ═══════════════════════════════════════════════════
+// TOILET
+// ═══════════════════════════════════════════════════
+function openToiletModal() { openModal('modal-toilet'); }
+
+function saveToilet() {
+    var t = {
+        id: 'TL-'+Date.now(),
+        date: new Date().toLocaleDateString('th-TH'),
+        name: gv('tl-name'), org: gv('tl-org'),
+        T: gv('tl-T'), O: gv('tl-O'), I: gv('tl-I'),
+        L: gv('tl-L'), E: gv('tl-E'), T2: gv('tl-T2'),
+        feedback: gv('tl-feedback'),
+    };
+    var list = load(K.toilet);
+    list.push(t);
+    save(K.toilet, list);
+    closeModal('modal-toilet');
+    renderToilet();
+    showToast('✅ Assessment submitted','success');
+}
+
+function renderToilet() {
+    var list = load(K.toilet);
+    if (list.length) {
+        var last = list[list.length-1];
+        ['T','O','I','L','E','T2'].forEach(k => setEl('tl-'+k, last[k]||'—'));
+    }
+    var log = document.getElementById('toilet-log');
+    if (!log) return;
+    if (!list.length) { log.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);">ยังไม่มีการประเมิน</div>'; return; }
+    log.innerHTML = list.slice().reverse().map(function(t) {
+        return '<div style="padding:10px 14px;border-bottom:1px solid var(--border);">' +
+            '<div style="display:flex;justify-content:space-between;margin-bottom:6px;">' +
+            '<span style="font-weight:600;">'+t.name+' · '+t.org+'</span>' +
+            '<span style="font-size:0.65rem;color:var(--text3);">'+t.date+'</span></div>' +
+            '<div style="display:flex;gap:6px;flex-wrap:wrap;">' +
+            ['T:'+t.T,'O:'+t.O,'I:'+t.I,'L:'+t.L,'E:'+t.E,'T:'+t.T2].map(s =>
+                '<span style="padding:2px 8px;border-radius:6px;font-size:0.65rem;font-weight:700;background:rgba(0,245,255,0.08);color:var(--cyan);">'+s+'</span>'
+            ).join('') + '</div>' +
+            (t.feedback?'<div style="font-size:0.72rem;color:var(--text2);margin-top:6px;border-left:2px solid var(--blue);padding-left:8px;">'+t.feedback+'</div>':'') +
+        '</div>';
+    }).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// DMAIC
+// ═══════════════════════════════════════════════════
+function openDMAICModal() {
+    ['dm-name','dm-detail','dm-kpi','dm-start','dm-target'].forEach(id=>{ var e=document.getElementById(id);if(e)e.value=''; });
+    openModal('modal-dmaic');
+}
+
+function saveDMAIC() {
+    var name = gv('dm-name');
+    if (!name) { showToast('กรุณากรอกชื่อโครงการ','warn'); return; }
+    var list = load(K.dmaic);
+    list.push({
+        id:'DM-'+Date.now(), name, phase:gv('dm-phase'), sh:gv('dm-sh'),
+        prog:gv('dm-prog'), detail:gv('dm-detail'),
+        start:gv('dm-start'), target:gv('dm-target'), kpi:gv('dm-kpi'),
+        created:new Date().toISOString(),
+    });
+    save(K.dmaic, list);
+    closeModal('modal-dmaic');
+    renderDmaic();
+    showToast('✅ DMAIC Project saved','success');
+}
+
+function renderDmaic() {
+    var list = load(K.dmaic);
+    var el = document.getElementById('dmaic-list');
+    if (!el) return;
+    if (!list.length) { el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text3);">ยังไม่มีโครงการ</div>'; return; }
+    var phaseColors = {'D - Define':'#f59e0b','M - Measure':'#a855f7','A - Analyze':'#00f5ff','I - Improve':'#10b981','C - Control':'#ec4899'};
+    el.innerHTML = list.map(function(d) {
+        var sh = [...STAKEHOLDERS,...ENGINNO_FNS].find(s=>s.code===d.sh);
+        var prog = parseInt(d.prog)||0;
+        var pc = phaseColors[d.phase]||'var(--cyan)';
+        return '<div class="card" style="border-color:rgba(255,255,255,0.1);">'+
+            '<div style="display:flex;justify-content:space-between;margin-bottom:8px;">'+
+            '<div><div style="font-weight:700;font-size:0.88rem;">'+d.name+'</div>'+
+            '<div style="font-size:0.65rem;color:var(--text3);">'+(sh?sh.icon+' '+sh.code:'')+(d.target?' · 🎯 '+d.target:'')+'</div></div>'+
+            '<div style="display:flex;gap:6px;align-items:flex-start;">'+
+            '<span style="padding:3px 10px;border-radius:6px;font-size:0.65rem;font-weight:700;background:'+pc+'22;color:'+pc+';">'+d.phase.split(' ')[0]+'</span>'+
+            '<button class="btn btn-r" style="padding:2px 7px;font-size:0.6rem;" onclick="deleteDMAIC(\''+d.id+'\')">🗑️</button>'+
+            '</div></div>'+
+            (d.detail?'<div style="font-size:0.75rem;color:var(--text2);margin-bottom:8px;">'+d.detail+'</div>':'')+
+            (d.kpi?'<div style="font-size:0.72rem;color:var(--yellow);margin-bottom:8px;">📊 KPI: '+d.kpi+'</div>':'')+
+            '<div style="display:flex;align-items:center;gap:8px;">'+
+            '<div style="flex:1;height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;">'+
+            '<div style="width:'+prog+'%;height:100%;background:'+pc+';border-radius:3px;"></div></div>'+
+            '<span style="font-size:0.65rem;color:'+pc+';">'+prog+'%</span></div>'+
+        '</div>';
+    }).join('');
+}
+
+function deleteDMAIC(id) {
+    if (!confirm('Delete?')) return;
+    save(K.dmaic, load(K.dmaic).filter(d=>d.id!==id));
+    renderDmaic();
+}
+
+// ═══════════════════════════════════════════════════
+// CONNECT
+// ═══════════════════════════════════════════════════
+function renderConnect() {
+    var gsUrl = loadStr(K.gs);
+    if (gsUrl) document.getElementById('gs-url').value = gsUrl;
+    var asUrl = loadStr(K.appsheet);
+    if (asUrl) document.getElementById('appsheet-url').value = asUrl;
+    var lkUrl = loadStr(K.looker);
+    if (lkUrl) document.getElementById('looker-url').value = lkUrl;
+    var status = document.getElementById('gs-status');
+    if (gsUrl && status) { status.textContent='✅ URL saved'; status.style.color='var(--green)'; }
+}
+
+function gsConnect() {
+    var url = gv('gs-url');
+    if (!url) { showToast('กรุณาใส่ URL','warn'); return; }
+    localStorage.setItem(K.gs, url);
+    var status = document.getElementById('gs-status');
+    if (status) { status.textContent='✅ URL saved · กด Setup ใน Apps Script เพื่อเริ่มใช้งาน'; status.style.color='var(--green)'; }
+    showToast('✅ URL saved','success');
+}
+
+async function syncToGS(data) {
+    var url = loadStr(K.gs);
+    if (!url) return;
+    try {
+        await fetch(url + '?action=create&data=' + encodeURIComponent(JSON.stringify(data)));
+    } catch(e) { /* silent fail */ }
+}
+
+function saveAppSheet() {
+    var url = gv('appsheet-url');
+    localStorage.setItem(K.appsheet, url);
+    showToast('✅ AppSheet URL saved','success');
+}
+
+function saveLooker() {
+    var url = gv('looker-url');
+    localStorage.setItem(K.looker, url);
+    showToast('✅ Looker Studio URL saved','success');
+}
+
+// ═══════════════════════════════════════════════════
+// EXPORT REPORT
+// ═══════════════════════════════════════════════════
+function exportReport(type) {
+    var progs = load(K.progress);
+    var now = new Date();
+    var title = type === 'daily' ? 'Daily Progress Report' :
+                type === 'weekly' ? 'Weekly Progress Report' : 'Monthly Executive Summary';
+
+    var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">'+
+        '<title>eNGINNo - '+title+'</title>'+
+        '<style>body{font-family:Sarabun,sans-serif;padding:30px;color:#111;background:#fff;}'+
+        'h1{color:#1e3a8a;margin-bottom:4px;}h2{color:#374151;font-size:14px;margin:16px 0 8px;}'+
+        'table{width:100%;border-collapse:collapse;font-size:12px;}'+
+        'th{background:#f3f4f6;padding:7px;border:1px solid #e5e7eb;text-align:left;}'+
+        'td{padding:7px;border:1px solid #e5e7eb;}tr:nth-child(even){background:#f9fafb;}'+
+        '.footer{margin-top:30px;border-top:1px solid #e5e7eb;padding-top:10px;font-size:10px;color:#9ca3af;text-align:center;}'+
+        '</style></head><body>'+
+        '<h1>eNGINNo SMART Analytics Ver1.0</h1>'+
+        '<p style="color:#6b7280;font-size:13px;">Engineering Innovation Assistant Director · PSD<br>'+title+' · '+now.toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'})+'</p>'+
+        '<h2>📊 Progress Summary ('+progs.length+' items)</h2>'+
+        '<table><tr><th>Date</th><th>Task</th><th>Stakeholder</th><th>Priority</th><th>Progress</th><th>Result</th><th>By</th><th>Exec Comment</th></tr>'+
+        progs.slice().reverse().map(function(p) {
+            var sh = [...STAKEHOLDERS,...ENGINNO_FNS].find(s=>s.code===p.sh);
+            return '<tr><td>'+p.date+'</td><td>'+p.task+'</td>'+
+                '<td>'+(sh?sh.icon+' '+sh.name:'—')+'</td>'+
+                '<td>'+p.prio+'</td><td>'+p.prog+'%</td>'+
+                '<td>'+(p.result||'—')+'</td><td>'+(p.by||'—')+'</td>'+
+                '<td>'+(p.execComment||'—')+'</td></tr>';
+        }).join('')+
+        '</table>'+
+        '<div class="footer">eNGINNo SMART Analytics Ver1.0 · TKO_Kittanan ONSEE · Engineering Innovation · PSD</div>'+
+        '</body></html>';
+
+    var w = window.open('','_blank','width=900,height=700');
+    w.document.write(html);
+    w.document.close();
+    setTimeout(function(){ w.print(); }, 400);
+    showToast('📧 Report ready to print/save','success');
+}
+
+// ═══════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════
+function gv(id) { var e=document.getElementById(id); return e?e.value:''; }
+function setEl(id,v) { var e=document.getElementById(id); if(e) e.textContent=v; }
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function showToast(msg, type) {
+    var el = document.getElementById('toast');
+    var colors = { success:'rgba(16,185,129,0.95)', warn:'rgba(245,158,11,0.95)',
+                   error:'rgba(239,68,68,0.95)', info:'rgba(59,130,246,0.95)' };
+    el.style.background = colors[type]||colors.success;
+    el.textContent = msg;
+    el.style.display = 'block';
+    setTimeout(function(){ el.style.display='none'; }, 2800);
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+(function init() {
+    populateSelects();
+    // Set default date filter to today
+    var df = document.getElementById('daily-date-filter');
+    if (df) df.value = new Date().toISOString().split('T')[0];
+    // Populate month select
+    var ms = document.getElementById('month-select');
+    if (ms) {
+        var now = new Date();
+        for (var i = 0; i < 12; i++) {
+            var d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+            var key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+            var opt = document.createElement('option');
+            opt.value = key; opt.textContent = d.toLocaleDateString('th-TH',{month:'long',year:'numeric'});
+            ms.appendChild(opt);
+        }
+    }
+    // Initial render handled by loginSuccess after auth
+    // renderDaily() called via loginSuccess → nav('monitor')
+    // Restore GSheets URL
+    var gsUrl = loadStr(K.gs);
+    if (gsUrl) { var el=document.getElementById('gs-url'); if(el) el.value=gsUrl; }
+})();
+</script>
+
+<script>
+// ═══════════════════════════════════════════════════
+// AUTH SYSTEM — Login / Register / Admin
+// ═══════════════════════════════════════════════════
+const ADMIN_USER = { username:'enginno', password:'password277', name:'TKO Kittanan ONSEE',
+                     role:'Admin · Engineering Innovation AD', dept:'B1', isAdmin:true, status:'approved' };
+const K_USERS    = 'eng_users_v1';
+const K_SESSION  = 'eng_session_v1';
+
+var _currentUser = null;
+
+// ── User storage ─────────────────────────────────
+function getUsers()       { try { return JSON.parse(localStorage.getItem(K_USERS)) || []; } catch(e) { return []; } }
+function saveUsers(u)     { try { localStorage.setItem(K_USERS, JSON.stringify(u)); } catch(e) {} }
+function getSession()     { try { return JSON.parse(localStorage.getItem(K_SESSION)); } catch(e) { return null; } }
+function saveSession(u)   { try { localStorage.setItem(K_SESSION, JSON.stringify({ user:u, ts:Date.now() })); } catch(e) {} }
+function clearSession()   { try { localStorage.removeItem(K_SESSION); } catch(e) {} }
+
+// ── Switch auth tab ───────────────────────────────
+function switchAuthTab(tab) {
+    var isLogin = tab === 'login';
+    document.getElementById('auth-login').style.display    = isLogin ? 'block' : 'none';
+    document.getElementById('auth-register').style.display = isLogin ? 'none' : 'block';
+    var lb = document.getElementById('tab-login-btn');
+    var rb = document.getElementById('tab-reg-btn');
+    lb.style.background = isLogin ? 'rgba(0,245,255,0.12)' : 'transparent';
+    lb.style.color      = isLogin ? '#00f5ff' : 'rgba(255,255,255,0.4)';
+    rb.style.background = isLogin ? 'transparent' : 'rgba(16,185,129,0.12)';
+    rb.style.color      = isLogin ? 'rgba(255,255,255,0.4)' : '#10b981';
+}
+
+// ── Login ─────────────────────────────────────────
+function doLogin() {
+    var u  = (document.getElementById('login-user')||{}).value || '';
+    var pw = (document.getElementById('login-pass')||{}).value || '';
+    var errEl = document.getElementById('login-error');
+
+    // Admin check
+    if (u === ADMIN_USER.username && pw === ADMIN_USER.password) {
+        loginSuccess(ADMIN_USER);
+        return;
+    }
+    // User check
+    var users = getUsers();
+    var found = users.find(function(x) { return x.username === u && x.password === pw; });
+    if (!found) {
+        errEl.textContent = '❌ Username หรือ Password ไม่ถูกต้อง';
+        errEl.style.display = 'block';
+        return;
+    }
+    if (found.status === 'pending') {
+        errEl.textContent = '⏳ บัญชีของคุณรอการอนุมัติจาก Admin · กรุณารอการแจ้งเตือน';
+        errEl.style.display = 'block';
+        return;
+    }
+    if (found.status === 'rejected') {
+        errEl.textContent = '❌ บัญชีถูกปฏิเสธ กรุณาติดต่อ Admin';
+        errEl.style.display = 'block';
+        return;
+    }
+    loginSuccess(found);
+}
+
+function loginSuccess(user) {
+    _currentUser = user;
+    saveSession(user);
+    // Update sidebar
+    setEl('sb-username', user.name || user.username);
+    setEl('sb-role', user.role || 'User');
+    setEl('sb-dept', user.dept || '');
+    // Show/hide admin nav
+    var adminNav = document.getElementById('nav-admin');
+    if (adminNav) adminNav.style.display = user.isAdmin ? 'flex' : 'none';
+    // Hide login page
+    var lp = document.getElementById('login-page');
+    if (lp) lp.style.display = 'none';
+    // Show app
+    var shell = document.querySelector('.shell');
+    if (shell) shell.style.display = 'flex';
+    // Nav to monitor
+    nav('monitor');
+    // Update topbar add btn default
+    document.getElementById('tb-add-btn').style.display = 'none';
+    showToast('ยินดีต้อนรับ ' + (user.name||user.username) + ' 👋','success');
+}
+
+// ── Register ──────────────────────────────────────
+function doRegister() {
+    var name  = (document.getElementById('reg-name')||{}).value.trim();
+    var uname = (document.getElementById('reg-uname')||{}).value.trim();
+    var pass  = (document.getElementById('reg-pass')||{}).value;
+    var dept  = (document.getElementById('reg-dept')||{}).value;
+    var role  = (document.getElementById('reg-role')||{}).value;
+    var email = (document.getElementById('reg-email')||{}).value;
+    var errEl = document.getElementById('reg-error');
+    var sucEl = document.getElementById('reg-success');
+    errEl.style.display = 'none';
+    sucEl.style.display = 'none';
+
+    if (!name || !uname || !pass || !dept || !role) {
+        errEl.textContent = '❌ กรุณากรอกข้อมูลให้ครบทุกช่อง (*)';
+        errEl.style.display = 'block'; return;
+    }
+    if (uname === ADMIN_USER.username) {
+        errEl.textContent = '❌ Username นี้ถูกใช้แล้ว';
+        errEl.style.display = 'block'; return;
+    }
+    var users = getUsers();
+    if (users.find(function(x) { return x.username === uname; })) {
+        errEl.textContent = '❌ Username "' + uname + '" ถูกใช้งานแล้ว';
+        errEl.style.display = 'block'; return;
+    }
+    var newUser = {
+        id: 'USR-' + Date.now(), name, username: uname, password: pass,
+        dept, role, email, status: 'pending',
+        registeredAt: new Date().toLocaleDateString('th-TH'),
+        isAdmin: false
+    };
+    users.push(newUser);
+    saveUsers(users);
+    sucEl.textContent = '✅ สมัครสมาชิกสำเร็จ! รอ Admin อนุมัติก่อนเข้าใช้งาน';
+    sucEl.style.display = 'block';
+    // Clear form
+    ['reg-name','reg-uname','reg-pass','reg-email'].forEach(function(id) {
+        var el = document.getElementById(id); if (el) el.value = '';
+    });
+}
+
+// ── Logout ────────────────────────────────────────
+function doLogout() {
+    if (!confirm('ต้องการออกจากระบบ?')) return;
+    _currentUser = null;
+    clearSession();
+    var lp = document.getElementById('login-page');
+    if (lp) { lp.style.display = 'flex'; document.getElementById('login-user').value=''; document.getElementById('login-pass').value=''; }
+    var shell = document.querySelector('.shell');
+    if (shell) shell.style.display = 'none';
+}
+
+// ── Admin: render users ────────────────────────────
+function renderAdmin() {
+    var users = getUsers();
+    var pending = users.filter(function(u) { return u.status === 'pending'; });
+
+    // Pending count badge
+    var nb = document.getElementById('nb-pending');
+    if (nb) { nb.textContent = pending.length; nb.style.display = pending.length ? 'inline' : 'none'; }
+
+    // Pending section
+    var pendingEl = document.getElementById('admin-pending');
+    if (pendingEl) {
+        if (!pending.length) {
+            pendingEl.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text3);">ไม่มีคำขอรออนุมัติ ✅</div>';
+        } else {
+            pendingEl.innerHTML = pending.map(function(u) {
+                return '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border);">' +
+                    '<div>' +
+                    '<div style="font-weight:700;">' + u.name + ' <span style="font-size:0.65rem;color:var(--text3);">@' + u.username + '</span></div>' +
+                    '<div style="font-size:0.7rem;color:var(--text3);">' + u.dept + ' · ' + u.role + ' · ' + u.registeredAt + '</div>' +
+                    '</div>' +
+                    '<div style="display:flex;gap:6px;">' +
+                    '<button class="btn btn-g" style="padding:4px 12px;font-size:0.7rem;" onclick="approveUser(\'' + u.id + '\')">✅ Approve</button>' +
+                    '<button class="btn btn-r" style="padding:4px 12px;font-size:0.7rem;" onclick="rejectUser(\'' + u.id + '\')">❌ Reject</button>' +
+                    '</div></div>';
+            }).join('');
+        }
+    }
+
+    // All users table
+    var allUsers = [ADMIN_USER, ...users];
+    setEl('admin-user-count', allUsers.length + ' users');
+    var tbody = document.getElementById('admin-users-tbody');
+    if (tbody) {
+        tbody.innerHTML = allUsers.map(function(u) {
+            var sc = u.isAdmin ? 'b-p' : u.status==='approved'?'b-g':u.status==='rejected'?'b-r':'b-y';
+            var sl = u.isAdmin ? 'Admin' : u.status;
+            return '<tr>' +
+                '<td style="font-weight:600;">' + (u.name||'—') + '</td>' +
+                '<td style="color:var(--cyan);">@' + u.username + '</td>' +
+                '<td>' + (u.dept||'—') + '</td>' +
+                '<td style="font-size:0.72rem;">' + (u.role||'—') + '</td>' +
+                '<td><span class="badge ' + sc + '">' + sl + '</span></td>' +
+                '<td style="font-size:0.7rem;color:var(--text3);">' + (u.registeredAt||'—') + '</td>' +
+                '<td>' + (!u.isAdmin && u.status!=='rejected' ? '<button class="btn btn-r" style="padding:2px 7px;font-size:0.6rem;" onclick="removeUser(\'' + u.id + '\')">🗑️</button>' : '') + '</td>' +
+                '</tr>';
+        }).join('');
+    }
+
+    // Share URL
+    var shareEl = document.getElementById('share-url');
+    if (shareEl) shareEl.textContent = window.location.href;
+}
+
+function approveUser(id) {
+    var users = getUsers();
+    var u = users.find(function(x) { return x.id === id; });
+    if (u) { u.status = 'approved'; saveUsers(users); renderAdmin(); showToast('✅ Approved: ' + u.name,'success'); }
+}
+function rejectUser(id) {
+    var users = getUsers();
+    var u = users.find(function(x) { return x.id === id; });
+    if (u) { u.status = 'rejected'; saveUsers(users); renderAdmin(); showToast('Rejected: ' + u.name,'warn'); }
+}
+function removeUser(id) {
+    if (!confirm('Remove user?')) return;
+    saveUsers(getUsers().filter(function(u) { return u.id !== id; }));
+    renderAdmin();
+}
+function copyShareUrl() {
+    navigator.clipboard.writeText(window.location.href).then(function() {
+        showToast('✅ URL copied!','success');
+    }).catch(function() {
+        showToast('กรุณา copy URL จาก address bar','warn');
+    });
+}
+
+// ═══════════════════════════════════════════════════
+// DASHBOARD MONITOR
+// ═══════════════════════════════════════════════════
+function renderMonitor() {
+    var filterDept = (document.getElementById('mon-filter-dept')||{}).value || '';
+    var users      = getUsers().filter(function(u) { return u.status === 'approved'; });
+    var allUsers   = [{ username:'enginno', name:'TKO Kittanan ONSEE', dept:'B1', role:'Admin · AD', isAdmin:true }, ...users];
+    if (filterDept) allUsers = allUsers.filter(function(u) { return u.dept === filterDept; });
+
+    var allTasks   = load(K.tasks);
+    var allProgs   = load(K.progress);
+
+    // Team KPIs
+    var allDone  = allTasks.filter(function(t) { return parseInt(t.prog||0) >= 100; }).length;
+    var allInProg= allTasks.filter(function(t) { var p=parseInt(t.prog||0); return p>0&&p<100; }).length;
+    setEl('mon-members', allUsers.length);
+    setEl('mon-done',    allDone);
+    setEl('mon-inprog',  allInProg);
+    setEl('mon-total',   allTasks.length);
+
+    // Per-person cards
+    var grid = document.getElementById('monitor-grid');
+    if (grid) {
+        if (!allUsers.length) {
+            grid.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text3);grid-column:span 3;">ไม่มีสมาชิกในทีม</div>';
+        } else {
+            grid.innerHTML = allUsers.map(function(u) {
+                var uTasks = allTasks.filter(function(t) { return t.owner === u.name || t.owner === u.username; });
+                var uProgs = allProgs.filter(function(p) { return p.by === u.name || p.by === u.username; });
+                var uDone  = uTasks.filter(function(t) { return parseInt(t.prog||0) >= 100; }).length;
+                var uPend  = uTasks.filter(function(t) { return parseInt(t.prog||0) < 100; }).length;
+                var uQ1    = uTasks.filter(function(t) { return t.quad === 'q1' && parseInt(t.prog||0)<100; }).length;
+                var avgProg= uTasks.length ? Math.round(uTasks.reduce(function(s,t){return s+(parseInt(t.prog||0));},0)/uTasks.length) : 0;
+                var deptInfo = [...ENGINNO_FNS].find(function(f){return f.code===u.dept;});
+                var deptColor = deptInfo ? deptInfo.color : '#6b7280';
+                return '<div style="padding:14px;border-radius:12px;background:var(--card);border:1px solid rgba(255,255,255,0.08);">' +
+                    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">' +
+                    '<div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,'+deptColor+'44,'+deptColor+'22);border:1px solid '+deptColor+'44;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">' + (u.isAdmin?'👑':'👤') + '</div>' +
+                    '<div style="min-width:0;">' +
+                    '<div style="font-weight:700;font-size:0.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + u.name + '</div>' +
+                    '<div style="font-size:0.62rem;color:'+deptColor+';">' + (u.dept||'') + ' · ' + (u.role||'') + '</div>' +
+                    '</div></div>' +
+                    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">' +
+                    '<div style="text-align:center;padding:6px;border-radius:7px;background:rgba(239,68,68,0.08);">' +
+                    '<div style="font-size:1.1rem;font-weight:700;font-family:Orbitron,sans-serif;color:var(--red);">' + uPend + '</div>' +
+                    '<div style="font-size:0.58rem;color:var(--text3);">Pending</div></div>' +
+                    '<div style="text-align:center;padding:6px;border-radius:7px;background:rgba(16,185,129,0.08);">' +
+                    '<div style="font-size:1.1rem;font-weight:700;font-family:Orbitron,sans-serif;color:var(--green);">' + uDone + '</div>' +
+                    '<div style="font-size:0.58rem;color:var(--text3);">Done</div></div>' +
+                    '<div style="text-align:center;padding:6px;border-radius:7px;background:rgba(0,245,255,0.06);">' +
+                    '<div style="font-size:1.1rem;font-weight:700;font-family:Orbitron,sans-serif;color:var(--cyan);">' + uProgs.length + '</div>' +
+                    '<div style="font-size:0.58rem;color:var(--text3);">Progress</div></div>' +
+                    '</div>' +
+                    '<div style="margin-bottom:4px;display:flex;justify-content:space-between;">' +
+                    '<span style="font-size:0.65rem;color:var(--text3);">Overall Progress</span>' +
+                    '<span style="font-size:0.65rem;color:'+(avgProg>=80?'var(--green)':avgProg>=50?'var(--yellow)':'var(--red)')+';">' + avgProg + '%</span>' +
+                    '</div>' +
+                    '<div style="height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;">' +
+                    '<div style="height:100%;width:'+avgProg+'%;background:'+(avgProg>=80?'var(--green)':avgProg>=50?'var(--yellow)':'var(--red)')+';border-radius:3px;transition:width .8s;"></div>' +
+                    '</div>' +
+                    (uQ1 > 0 ? '<div style="margin-top:8px;font-size:0.65rem;color:var(--red);">🔴 '+uQ1+' งานเร่งด่วนค้างอยู่</div>' : '') +
+                    '</div>';
+            }).join('');
+        }
+    }
+
+    // Shared progress log
+    var tbody = document.getElementById('mon-tbody');
+    if (tbody) {
+        var sorted = allProgs.slice().sort(function(a,b){ return b.created > a.created ? 1:-1; }).slice(0,30);
+        if (!sorted.length) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--text3);">ยังไม่มีข้อมูล</td></tr>';
+        } else {
+            var shMap = {};
+            [...STAKEHOLDERS,...ENGINNO_FNS].forEach(function(s){ shMap[s.code]=s; });
+            var pc2 = function(p){ return p>=100?'var(--green)':p>=50?'var(--yellow)':'var(--red)'; };
+            tbody.innerHTML = sorted.map(function(p) {
+                var sh = shMap[p.sh];
+                var pr = parseInt(p.prog||0);
+                return '<tr>' +
+                    '<td style="font-weight:600;white-space:nowrap;">' + (p.by||'—') + '</td>' +
+                    '<td style="font-size:0.68rem;color:var(--text3);">' + (p.date||'—') + '</td>' +
+                    '<td>' + (p.task||'—') + '</td>' +
+                    '<td>' + (sh?'<span class="badge b-c">'+sh.icon+' '+sh.code+'</span>':'—') + '</td>' +
+                    '<td><span class="badge ' + ({'Critical':'b-r','High':'b-o','Medium':'b-y','Low':'b-g'}[p.prio]||'b-b') + '">' + (p.prio||'—') + '</span></td>' +
+                    '<td><div style="display:flex;align-items:center;gap:4px;"><div style="height:4px;width:60px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;"><div style="height:100%;width:'+pr+'%;background:'+pc2(pr)+';"></div></div><span style="font-size:0.62rem;color:'+pc2(pr)+';">'+pr+'%</span></div></td>' +
+                    '<td style="font-size:0.7rem;color:var(--text3);">' + (p.date||'—') + '</td>' +
+                    '<td style="font-size:0.7rem;color:var(--text2);">' + (p.result||'—').substring(0,50) + '</td>' +
+                    '</tr>';
+            }).join('');
+        }
+    }
+    var syncEl = document.getElementById('mon-last-sync');
+    if (syncEl) syncEl.textContent = 'Updated: ' + new Date().toLocaleTimeString('th-TH');
+}
+
+// ═══════════════════════════════════════════════════
+// AUTO-RESTORE SESSION + INIT OVERRIDE
+// ═══════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', function() {
+    // Hide shell initially
+    var shell = document.querySelector('.shell');
+    if (shell) shell.style.display = 'none';
+
+    // Try restore session (expires after 8 hours)
+    var sess = getSession();
+    if (sess && sess.user && (Date.now() - sess.ts) < 8 * 3600 * 1000) {
+        loginSuccess(sess.user);
+    } else {
+        // Show login
+        var lp = document.getElementById('login-page');
+        if (lp) lp.style.display = 'flex';
+    }
+
+    // Refresh admin badge periodically
+    setInterval(function() {
+        if (_currentUser && _currentUser.isAdmin) {
+            var pending = getUsers().filter(function(u){ return u.status==='pending'; }).length;
+            var nb = document.getElementById('nb-pending');
+            if (nb) { nb.textContent=pending; nb.style.display=pending?'inline':'none'; }
+        }
+    }, 30000);
+});
+
+</script>
+
+<script>
+// ═══════════════════════════════════════════════════
+// AI ANALYTICS — Claude AI Integration
+// ═══════════════════════════════════════════════════
+
+var _aiHistory = [];
+var _aiAnalyzing = false;
+
+// ── Build context from current data ──────────────
+function aiGetContext() {
+    var tasks   = load(K.tasks);
+    var progs   = load(K.progress);
+    var users   = getUsers().filter(function(u){ return u.status==='approved'; });
+    var now     = new Date();
+    var weekAgo = new Date(now - 7*86400000);
+
+    // Weekly progress per user
+    var weekProgs = progs.filter(function(p){
+        return new Date(p.date) >= weekAgo;
+    });
+
+    var userStats = users.map(function(u) {
+        var uTasks = tasks.filter(function(t){ return t.owner===u.name||t.owner===u.username; });
+        var uWeek  = weekProgs.filter(function(p){ return p.by===u.name||p.by===u.username; });
+        var avgProg = uTasks.length ? Math.round(uTasks.reduce(function(s,t){return s+(parseInt(t.prog||0));},0)/uTasks.length) : 0;
+        var done    = uTasks.filter(function(t){ return parseInt(t.prog||0)>=100; }).length;
+        var pending = uTasks.filter(function(t){ return parseInt(t.prog||0)<100; }).length;
+        var q1      = uTasks.filter(function(t){ return t.quad==='q1'&&parseInt(t.prog||0)<100; }).length;
+        return { name:u.name, dept:u.dept, role:u.role, avgProg, done, pending, q1, weekEntries:uWeek.length };
+    });
+
+    var q1Tasks = tasks.filter(function(t){ return t.quad==='q1'&&parseInt(t.prog||0)<100; });
+    var overdue = tasks.filter(function(t){
+        return t.due && new Date(t.due)<now && parseInt(t.prog||0)<100;
+    });
+    var lowPerf = userStats.filter(function(u){ return u.avgProg < 50 && u.pending > 0; });
+
+    return {
+        totalTasks   : tasks.length,
+        q1Urgent     : q1Tasks.length,
+        overdue      : overdue.length,
+        totalUsers   : users.length,
+        lowPerf      : lowPerf,
+        userStats    : userStats,
+        weekProgs    : weekProgs.length,
+        q1Details    : q1Tasks.slice(0,5).map(function(t){
+            return t.title + ' (' + (t.sh||'—') + ', ' + (parseInt(t.prog||0)) + '%, due:' + (t.due||'—') + ')';
+        }),
+        overdueDetails: overdue.slice(0,5).map(function(t){
+            return t.title + ' (due:' + t.due + ')';
+        }),
+        recentProgs  : progs.slice(-5).map(function(p){ return p.task + ' [' + p.prog + '%]'; }),
+    };
+}
+
+function aiBuildSystemPrompt() {
+    var ctx  = aiGetContext();
+    var user = _currentUser || {};
+    return 'คุณคือ AI Assistant สำหรับระบบ eNGINNo SMART Analytics Ver1.0\n' +
+        'ทำงานให้กับ ' + (user.name||'ทีม') + ' ตำแหน่ง ' + (user.role||'Engineering Innovation') + '\n\n' +
+        '=== ข้อมูลปัจจุบัน ===\n' +
+        '- งานทั้งหมด: ' + ctx.totalTasks + ' รายการ\n' +
+        '- งานเร่งด่วน (Q1) ค้างอยู่: ' + ctx.q1Urgent + ' รายการ\n' +
+        (ctx.q1Details.length ? '  รายละเอียด Q1: ' + ctx.q1Details.join(', ') + '\n' : '') +
+        '- งาน Overdue: ' + ctx.overdue + ' รายการ\n' +
+        (ctx.overdueDetails.length ? '  Overdue: ' + ctx.overdueDetails.join(', ') + '\n' : '') +
+        '- สมาชิกทีม: ' + ctx.totalUsers + ' คน\n' +
+        '- Progress สัปดาห์นี้: ' + ctx.weekProgs + ' รายการ\n' +
+        (ctx.lowPerf.length ? '- ⚠️ User ที่ต่ำกว่า 50%: ' + ctx.lowPerf.map(function(u){ return u.name+'('+u.avgProg+'%)'; }).join(', ') + '\n' : '') +
+        '\n=== ทีม ===\n' +
+        ctx.userStats.map(function(u){
+            return u.name + ': ' + u.dept + ' | done:'+u.done+' pending:'+u.pending+' Q1urgent:'+u.q1+' progress:'+u.avgProg+'%';
+        }).join('\n') + '\n\n' +
+        'ตอบเป็นภาษาไทย กระชับ ชัดเจน เน้นประโยชน์จริง ใช้ emoji ช่วยให้อ่านง่าย\n' +
+        'เมื่อแจ้งเตือนให้ระบุชื่อและตัวเลขจริง เมื่อแนะนำให้ระบุ action ที่ทำได้จริง';
+}
+
+// ── Preset prompts ────────────────────────────────
+var AI_PROMPTS = {
+    urgent: 'วิเคราะห์งานเร่งด่วน (Q1 - สำคัญ/เร่งด่วน) ที่ค้างอยู่ทั้งหมด บอกถึงความเสี่ยงและลำดับที่ควรทำก่อน พร้อมเหตุผล',
+    problems: 'วิเคราะห์ปัญหาที่พบในข้อมูลปัจจุบัน ทั้งเรื่องงาน Overdue, stakeholder ที่ยังขาดการดูแล และจุดที่ต้องแก้ไขเร่งด่วน',
+    performance: 'ตรวจสอบและวิเคราะห์ประสิทธิภาพของสมาชิกทีมแต่ละคน โดยเฉพาะคนที่ progress ต่ำกว่า 50% พร้อมข้อเสนอแนะการสนับสนุน',
+    recommend: 'แนะนำแผนการทำงานสัปดาห์นี้ จัดลำดับความสำคัญของงานที่ค้างอยู่ และวิธีเพิ่มประสิทธิภาพทีม Engineering Innovation',
+};
+
+// ── Send message ──────────────────────────────────
+async function aiSendMessage() {
+    var input = document.getElementById('ai-input');
+    var msg   = (input ? input.value.trim() : '');
+    if (!msg || _aiAnalyzing) return;
+    if (input) input.value = '';
+    await aiChat(msg);
+}
+
+async function aiAsk(type) {
+    if (_aiAnalyzing) return;
+    await aiChat(AI_PROMPTS[type] || type);
+}
+
+async function aiAutoAnalyze() {
+    if (_aiAnalyzing) return;
+    var ctx = aiGetContext();
+    var autoMsg = '📊 Auto Analysis: วิเคราะห์ภาพรวมทั้งหมดของทีม Engineering Innovation ณ ตอนนี้ ครอบคลุมงานเร่งด่วน ปัญหา ประสิทธิภาพ และให้คำแนะนำที่ควรทำทันที';
+    await aiChat(autoMsg);
+}
+
+// ── Core chat function ────────────────────────────
+async function aiChat(userMessage) {
+    _aiAnalyzing = true;
+
+    // Show user message
+    aiAddMessage('user', userMessage);
+
+    // Show typing indicator
+    var typingEl = document.getElementById('ai-typing');
+    if (typingEl) typingEl.style.display = 'flex';
+
+    // Disable input
+    var inputEl = document.getElementById('ai-input');
+    if (inputEl) inputEl.disabled = true;
+
+    // Build messages
+    _aiHistory.push({ role: 'user', content: userMessage });
+    if (_aiHistory.length > 10) _aiHistory = _aiHistory.slice(-10);
+
+    try {
+        var res = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model      : 'claude-sonnet-4-20250514',
+                max_tokens : 1000,
+                system     : aiBuildSystemPrompt(),
+                messages   : _aiHistory,
+            })
+        });
+
+        var data = await res.json();
+        var reply = data.content && data.content[0] ? data.content[0].text : 'ขออภัย ไม่สามารถวิเคราะห์ได้ในขณะนี้';
+
+        _aiHistory.push({ role: 'assistant', content: reply });
+        aiAddMessage('bot', reply);
+
+        // Check for low performance warning
+        var ctx = aiGetContext();
+        if (ctx.lowPerf.length > 0) {
+            var nb = document.getElementById('nb-ai-alert');
+            if (nb) { nb.style.display = 'inline'; nb.textContent = ctx.lowPerf.length; }
+        }
+
+    } catch(e) {
+        aiAddMessage('bot', '❌ ไม่สามารถเชื่อมต่อ AI ได้ในขณะนี้\n\nกรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต\n\nข้อผิดพลาด: ' + e.message);
+    }
+
+    // Hide typing
+    if (typingEl) typingEl.style.display = 'none';
+    if (inputEl) inputEl.disabled = false;
+    _aiAnalyzing = false;
+}
+
+// ── Render messages ────────────────────────────────
+function aiAddMessage(role, text) {
+    var container = document.getElementById('ai-messages');
+    if (!container) return;
+
+    // Remove empty state
+    var empty = container.querySelector('.ai-empty-state');
+    if (empty) empty.remove();
+
+    var div = document.createElement('div');
+    div.className = role === 'user' ? 'ai-msg-user' : 'ai-msg-bot';
+
+    if (role === 'bot') {
+        // Format markdown-like text
+        var formatted = text
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.+?)\*/g, '<em>$1</em>')
+            .replace(/^#{1,3}\s(.+)$/gm, '<h4>$1</h4>')
+            .replace(/^- (.+)$/gm, '• $1')
+            .replace(/\n\n/g, '</p><p>')
+            .replace(/\n/g, '<br>');
+        div.innerHTML = '<p>' + formatted + '</p>';
+    } else {
+        div.textContent = text;
+    }
+
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+}
+
+function aiClearChat() {
+    _aiHistory = [];
+    var container = document.getElementById('ai-messages');
+    if (container) {
+        container.innerHTML = '<div class="ai-empty-state" style="text-align:center;padding:20px;color:var(--text3);">' +
+            '<div style="font-size:1.5rem;margin-bottom:8px;">🤖</div>' +
+            '<div style="font-size:0.8rem;">สวัสดีครับ! ผมคือ AI Assistant ของ eNGINNo<br>กด Quick Action ด้านบน หรือพิมพ์คำถามได้เลยครับ</div>' +
+            '</div>';
+    }
+}
+
+// ── renderAI ─────────────────────────────────────
+function renderAI() {
+    var ctx = aiGetContext();
+    var alertsRow = document.getElementById('ai-alerts-row');
+    if (!alertsRow) return;
+
+    var alerts = [];
+
+    // Urgent tasks alert
+    if (ctx.q1Urgent > 0) {
+        alerts.push({
+            color:'var(--red)', bg:'rgba(239,68,68,0.06)', border:'rgba(239,68,68,0.2)',
+            icon:'🔴', title:'งานเร่งด่วนค้าง', value:ctx.q1Urgent+' รายการ',
+            sub:'Q1 สำคัญ/เร่งด่วน ต้องดำเนินการทันที',
+        });
+    }
+
+    // Overdue alert
+    if (ctx.overdue > 0) {
+        alerts.push({
+            color:'var(--orange)', bg:'rgba(249,115,22,0.06)', border:'rgba(249,115,22,0.2)',
+            icon:'⏰', title:'งาน Overdue', value:ctx.overdue+' รายการ',
+            sub:'เลยกำหนดแล้ว ต้องติดตามด่วน',
+        });
+    }
+
+    // Low performance warning
+    if (ctx.lowPerf.length > 0) {
+        alerts.push({
+            color:'var(--yellow)', bg:'rgba(245,158,11,0.06)', border:'rgba(245,158,11,0.2)',
+            icon:'⚠️', title:'ประสิทธิภาพต่ำกว่า 50%', value:ctx.lowPerf.length+' คน',
+            sub: ctx.lowPerf.map(function(u){ return u.name+'('+u.avgProg+'%)'; }).join(', '),
+        });
+    }
+
+    // Good status
+    if (ctx.totalTasks > 0 && ctx.q1Urgent === 0 && ctx.overdue === 0) {
+        alerts.push({
+            color:'var(--green)', bg:'rgba(16,185,129,0.06)', border:'rgba(16,185,129,0.2)',
+            icon:'✅', title:'สถานะดี', value:'ไม่มีงานเร่งด่วนค้าง',
+            sub:'ทีมทำงานได้ตามแผน',
+        });
+    }
+
+    alertsRow.innerHTML = alerts.map(function(a) {
+        return '<div style="padding:12px 14px;border-radius:10px;background:'+a.bg+';border:1px solid '+a.border+';">' +
+            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">' +
+            '<span style="font-size:1.2rem;">'+a.icon+'</span>' +
+            '<span style="font-size:0.75rem;font-weight:700;color:'+a.color+';">'+a.title+'</span>' +
+            '</div>' +
+            '<div style="font-family:Orbitron,sans-serif;font-size:1rem;font-weight:700;color:'+a.color+';margin-bottom:3px;">'+a.value+'</div>' +
+            '<div style="font-size:0.65rem;color:var(--text3);">'+a.sub+'</div>' +
+            '</div>';
+    }).join('');
+
+    // Update nav badge
+    var nb = document.getElementById('nb-ai-alert');
+    var totalAlert = ctx.q1Urgent + ctx.overdue + ctx.lowPerf.length;
+    if (nb) { nb.textContent=totalAlert; nb.style.display=totalAlert?'inline':'none'; }
+}
+
+</script>
+</body>
